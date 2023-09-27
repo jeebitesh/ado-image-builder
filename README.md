@@ -3,14 +3,24 @@
 
 **Table of Contents**
 
-- [About](#about)
-- [Available Images](#available-images)
-- [Announcements](#announcements)
-- [Image Definitions](#image-definitions)
-- [Image Releases](#image-releases)
-- [Software and Image Support](#software-and-image-support)
-- [How to Interact with the Repo](#how-to-interact-with-the-repo)
-- [FAQs](#faqs)
+- [GitHub Actions Runner Images](#github-actions-runner-images)
+  - [About](#about)
+  - [Available Images](#available-images)
+    - [Label scheme](#label-scheme)
+  - [Announcements](#announcements)
+  - [Image Definitions](#image-definitions)
+    - [Beta](#beta)
+    - [GA](#ga)
+      - [Latest Migration Process](#latest-migration-process)
+  - [Image Releases](#image-releases)
+  - [Software and Image Support](#software-and-image-support)
+    - [Support Policy](#support-policy)
+    - [Package managers usage](#package-managers-usage)
+    - [Image Deprecation Policy](#image-deprecation-policy)
+    - [Preinstallation Policy](#preinstallation-policy)
+    - [Default Version Update Policy](#default-version-update-policy)
+  - [How to Interact with the Repo](#how-to-interact-with-the-repo)
+  - [FAQs](#faqs)
 
 ## About
 
@@ -23,11 +33,7 @@ To build a VM machine from this repo's source, see the [instructions](docs/creat
 | --------------------|---------------------|--------------------|---------------------|
 | Ubuntu 22.04 | `ubuntu-latest` or `ubuntu-22.04` | [ubuntu-22.04] | [![status22](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=ubuntu22&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=ubuntu22&redirect=1)
 | Ubuntu 20.04 | `ubuntu-20.04` | [ubuntu-20.04] | [![status20](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=ubuntu20&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=ubuntu20&redirect=1)
-| macOS 13 [beta] | `macos-13` or `macos-13-xl`| [macOS-13] | [![statusumac13](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=macos-13&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=macos-13&redirect=1)
-| macOS 12 | `macos-latest`, `macos-latest-xl`, `macos-12`, or `macos-12-xl`| [macOS-12] | [![statusumac12](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=macos-12&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=macos-12&redirect=1)
-| macOS 11 | `macos-11`| [macOS-11] | [![statusmac11](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=macos-11&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=macos-11&redirect=1)
 | Windows Server 2022 | `windows-latest` or `windows-2022` | [windows-2022] | [![statuswin22](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=windows-2022&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=windows-2022&redirect=1) |
-| Windows Server 2019 | `windows-2019` | [windows-2019] | [![statuswin19](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=windows-2019&badge=1)](https://runnerimagesdeploymentstatus.azurewebsites.net/api/status?imageName=windows-2019&redirect=1)
 
 ### Label scheme
 
@@ -37,12 +43,6 @@ To build a VM machine from this repo's source, see the [instructions](docs/creat
 [ubuntu-22.04]: https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
 [ubuntu-20.04]: https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2004-Readme.md
 [windows-2022]: https://github.com/actions/runner-images/blob/main/images/win/Windows2022-Readme.md
-[windows-2019]: https://github.com/actions/runner-images/blob/main/images/win/Windows2019-Readme.md
-[macOS-11]: https://github.com/actions/runner-images/blob/main/images/macos/macos-11-Readme.md
-[macOS-12]: https://github.com/actions/runner-images/blob/main/images/macos/macos-12-Readme.md
-[macOS-13]: https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md
-[macOS-10.15]: https://github.com/actions/runner-images/blob/main/images/macos/macos-10.15-Readme.md
-[self-hosted runners]: https://help.github.com/en/actions/hosting-your-own-runners
 
 ## Announcements
 
@@ -73,9 +73,7 @@ latest 2 versions of an OS.
 
 GitHub Actions and Azure DevOps use the `-latest` YAML label (ex: `ubuntu-latest`, `windows-latest`, and `macos-latest`). These labels point towards the newest stable OS version available.
 
-
 The `-latest` migration process is gradual and happens over 1-2 months in order to allow customers to adapt their workflows to the newest OS version. During this process, any workflow using the `-latest` label, may see changes in the OS version in their workflows or pipelines. To avoid unwanted migration, users can specify a specific OS version in the yaml file (ex: macos-12, windows-2022, ubuntu-22.04).
-
 
 ## Image Releases
 
@@ -165,8 +163,10 @@ In general, these are the guidelines we follow when deciding what to pre-install
    <summary><b><i>What images are available for GitHub Actions and Azure DevOps?</b></i></summary>
 
 The availability of images for GitHub Actions and Azure DevOps is the same. However, deprecation policies may differ. See documentation for more details:
+
 - [GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-runners-and-hardware-resources)
 - [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#software)
+
 </details>
 
 <details>

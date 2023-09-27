@@ -1,351 +1,845 @@
 {
-    "variables": {
-        "client_id": "{{env `ARM_CLIENT_ID`}}",
-        "client_secret": "{{env `ARM_CLIENT_SECRET`}}",
-        "client_cert_path": "{{env `ARM_CLIENT_CERT_PATH`}}",
-        "subscription_id": "{{env `ARM_SUBSCRIPTION_ID`}}",
-        "tenant_id": "{{env `ARM_TENANT_ID`}}",
-        "object_id": "{{env `ARM_OBJECT_ID`}}",
-        "managed_image_resource_group_name": "{{env `ARM_RESOURCE_GROUP`}}",
-        "managed_image_storage_account_type": "Premium_LRS",
-        "build_resource_group_name": "{{env `BUILD_RESOURCE_GROUP_NAME`}}",
-        "temp_resource_group_name": "{{env `TEMP_RESOURCE_GROUP_NAME`}}",
-        "location": "{{env `ARM_RESOURCE_LOCATION`}}",
-        "virtual_network_name": "{{env `VNET_NAME`}}",
-        "virtual_network_resource_group_name": "{{env `VNET_RESOURCE_GROUP`}}",
-        "virtual_network_subnet_name": "{{env `VNET_SUBNET`}}",
-        "private_virtual_network_with_public_ip": "{{env `PRIVATE_VIRTUAL_NETWORK_WITH_PUBLIC_IP`}}",
-        "allowed_inbound_ip_addresses": "{{env `AGENT_IP`}}",
-        "vm_size": "Standard_F8s_v2",
-        "image_folder": "C:\\image",
-        "imagedata_file": "C:\\imagedata.json",
-        "helper_script_folder": "C:\\Program Files\\WindowsPowerShell\\Modules\\",
-        "agent_tools_directory": "C:\\hostedtoolcache\\windows",
-        "install_user": "installer",
-        "install_password": null,
-        "managed_image_name": "packer-win22-dev",
-        "image_version": "dev",
-        "image_os": "win22"
-    },
-    "sensitive-variables": [
-        "install_password",
-        "client_secret"
-    ],
-    "builders": [
-        {
-            "name": "image",
-            "type": "azure-arm",
-            "client_id": "{{user `client_id`}}",
-            "client_secret": "{{user `client_secret`}}",
-            "client_cert_path": "{{user `client_cert_path`}}",
-            "subscription_id": "{{user `subscription_id`}}",
-            "object_id": "{{user `object_id`}}",
-            "tenant_id": "{{user `tenant_id`}}",
-            "os_disk_size_gb": "256",
-            "location": "{{user `location`}}",
-            "vm_size": "{{user `vm_size`}}",
-            "managed_image_name": "{{user `managed_image_name`}}",
-            "managed_image_resource_group_name": "{{user `managed_image_resource_group_name`}}",
-            "managed_image_storage_account_type": "{{user `managed_image_storage_account_type`}}",
-            "build_resource_group_name": "{{user `build_resource_group_name`}}",
-            "temp_resource_group_name": "{{user `temp_resource_group_name`}}",
-            "virtual_network_name": "{{user `virtual_network_name`}}",
-            "virtual_network_resource_group_name": "{{user `virtual_network_resource_group_name`}}",
-            "virtual_network_subnet_name": "{{user `virtual_network_subnet_name`}}",
-            "private_virtual_network_with_public_ip": "{{user `private_virtual_network_with_public_ip`}}",
-            "allowed_inbound_ip_addresses": "{{user `allowed_inbound_ip_addresses`}}",
-            "os_type": "Windows",
-            "image_publisher": "MicrosoftWindowsServer",
-            "image_offer": "WindowsServer",
-            "image_sku": "2022-Datacenter",
-            "communicator": "winrm",
-            "winrm_use_ssl": "true",
-            "winrm_insecure": "true",
-            "winrm_username": "packer"
-        }
-    ],
-    "provisioners": [
-        {
-            "type": "powershell",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "destinationImageName": {
+        "value": ""
+      },
+      "location": {
+        "value": ""
+      },
+      "tags": {
+        "value": { }
+      },
+      "osType": {
+        "value": "Windows"
+      },
+      "version": {
+        "value": "2022"
+      },
+      "imageTemplateDistributor": {
+        "value": "SharedImage"
+      },
+      "osDiskSizeGB": {
+        "value": 128
+      },
+      "storageAccountType": {
+        "value": "Standard_ZRS"
+      },
+      "sourceType": {
+        "value": "PlatformImage"
+      },
+      "managedIdentityName": {
+        "value": "<imageBuilder Identity name>"
+      },
+      "destinationGalleryName": {
+        "value": "<image gallery name>"
+      },
+      "customize": {
+        "value": [
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/toolsets/toolset-2022.json",
+            "destination": "C:\\image\\toolset.json"
+          },
+          {
+            "type": "PowerShell",
             "inline": [
-                "New-Item -Path {{user `image_folder`}} -ItemType Directory -Force"
-            ]
-        },
-        {
-            "type": "file",
-            "source": "{{ template_dir }}/scripts/ImageHelpers",
-            "destination": "{{user `helper_script_folder`}}"
-        },
-        {
-            "type": "file",
-            "source": "{{ template_dir }}/scripts/SoftwareReport",
-            "destination": "{{user `image_folder`}}"
-        },
-        {
-            "type": "file",
-            "source": "{{ template_dir }}/../../helpers/software-report-base",
-            "destination": "{{user `image_folder`}}/SoftwareReport/"
-        },
-        {
-            "type": "file",
-            "source": "{{ template_dir }}/post-generation",
-            "destination": "C:/"
-        },
-        {
-            "type": "file",
-            "source": "{{ template_dir }}/scripts/Tests",
-            "destination": "{{user `image_folder`}}"
-        },
-        {
-            "type": "file",
-            "source": "{{template_dir}}/toolsets/toolset-2022.json",
-            "destination": "{{user `image_folder`}}\\toolset.json"
-        },
-        {
-            "type": "windows-shell",
+              "[Environment]::SetEnvironmentVariable('IMAGE_VERSION', 'dev', 'Machine')",
+              "[Environment]::SetEnvironmentVariable('IMAGE_OS', 'win22', 'Machine')",
+              "[Environment]::SetEnvironmentVariable('AGENT_TOOLSDIRECTORY', 'C:\\hostedtoolcache\\windows', 'Machine')",
+              "[Environment]::SetEnvironmentVariable('IMAGEDATA_FILE', 'C:\\imagedata.json', 'Machine')"
+            ],
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/ChocoHelpers.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\ChocoHelpers.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/ImageHelpers.psd1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\ImageHelpers.psd1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/ImageHelpers.psm1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\ImageHelpers.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/InstallHelpers.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\InstallHelpers.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/PathHelpers.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\PathHelpers.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/TestsHelpers.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\TestsHelpers.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/VisualStudioHelpers.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\VisualStudioHelpers.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/test/PathHelpers.Tests.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\test\\PathHelpers.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/ImageHelpers/test/ImageHelpers.Tests.ps1",
+            "destination": "C:\\Program Files\\WindowsPowerShell\\Modules\\ImageHelpers\\test\\ImageHelpers.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Android.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Android.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Browsers.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Browsers.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.CachedTools.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.CachedTools.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Common.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Common.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Databases.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Databases.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Generator.ps1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Generator.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Helpers.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Helpers.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Java.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Java.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Tools.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Tools.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.Helpers.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.Helpers.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.VisualStudio.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.VisualStudio.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/SoftwareReport/SoftwareReport.WebServers.psm1",
+            "destination": "C:\\image\\SoftwareReport\\SoftwareReport.WebServers.psm1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/post-generation/GenerateIISExpressCertificate.ps1",
+            "destination": "C:\\post-generation\\GenerateIISExpressCertificate.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/post-generation/InternetExplorerConfiguration.ps1",
+            "destination": "C:\\post-generation\\InternetExplorerConfiguration.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/post-generation/Msys2FirstLaunch.ps1",
+            "destination": "C:\\post-generation\\Msys2FirstLaunch.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/post-generation/VSConfiguration.ps1",
+            "destination": "C:\\post-generation\\VSConfiguration.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/post-generation/warmup.vdproj",
+            "destination": "C:\\post-generation\\warmup.vdproj"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Android.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Android.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Apache.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Apache.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Browsers.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Browsers.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/ChocoPackages.Tests.ps1",
+            "destination": "C:\\image\\Tests\\ChocoPackages.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/CLI.Tools.Tests.ps1",
+            "destination": "C:\\image\\Tests\\CLI.Tools.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Git.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Git.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Databases.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Databases.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Docker.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Docker.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/DotnetSDK.Tests.ps1",
+            "destination": "C:\\image\\Tests\\DotnetSDK.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Haskell.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Haskell.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Java.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Java.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Miniconda.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Miniconda.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/MSYS2.Tests.ps1",
+            "destination": "C:\\image\\Tests\\MSYS2.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Nginx.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Nginx.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Node.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Node.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/PipxPackages.Tests.ps1",
+            "destination": "C:\\image\\Tests\\PipxPackages.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/PowerShellAzModules.Tests.ps1",
+            "destination": "C:\\image\\Tests\\PowerShellAzModules.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Rust.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Rust.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Shell.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Shell.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/SSDTExtensions.Tests.ps1",
+            "destination": "C:\\image\\Tests\\SSDTExtensions.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Tools.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Tools.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Toolset.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Toolset.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/VisualStudio.Tests.ps1",
+            "destination": "C:\\image\\Tests\\VisualStudio.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Vsix.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Vsix.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/WDK.Tests.ps1",
+            "destination": "C:\\image\\Tests\\WDK.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/PowerShellModules.Tests.ps1",
+            "destination": "C:\\image\\Tests\\PowerShellModules.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/WinAppDriver.Tests.ps1",
+            "destination": "C:\\image\\Tests\\WinAppDriver.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/Wix.Tests.ps1",
+            "destination": "C:\\image\\Tests\\Wix.Tests.ps1"
+          },
+          {
+            "type": "File",
+            "sourceUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/WindowsFeatures.Tests.ps1",
+            "destination": "C:\\image\\Tests\\WindowsFeatures.Tests.ps1"
+          },
+          {
+            "type": "PowerShell",
             "inline": [
-                "net user {{user `install_user`}} {{user `install_password`}} /add /passwordchg:no /passwordreq:yes /active:yes /Y",
-                "net localgroup Administrators {{user `install_user`}} /add",
-                "winrm set winrm/config/service/auth @{Basic=\"true\"}",
-                "winrm get winrm/config/service/auth"
-            ]
-        },
-        {
-            "type": "powershell",
+              "New-Item -Path C:\\build -ItemType Directory -Force",
+              "New-Item -Path C:\\buildActions -ItemType Directory -Force",
+              "New-Item -Path C:\\image -ItemType Directory -Force",
+              "New-Item -Path C:\\hostedtoolcache\\windows -ItemType Directory -Force",
+              "echo Azure-Image-Builder  > c:\\build\\buildActionsOutput.txt"
+            ],
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
             "inline": [
-                "if (-not ((net localgroup Administrators) -contains '{{user `install_user`}}')) { exit 1 }"
-            ]
-        },
-        {
-            "type": "powershell",
+              "bcdedit.exe /set TESTSIGNING ON"
+            ],
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Configure-Antivirus.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-PowerShellModules.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-WindowsFeatures.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Choco.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Initialize-VM.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Update-ImageData.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Update-DotnetTLS.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsRestart",
+            "restartCheckCommand": "powershell -command \"& {while ( (Get-WindowsOptionalFeature -Online -FeatureName Containers -ErrorAction SilentlyContinue).State -ne 'Enabled' ) { Start-Sleep 30; Write-Output 'InProgress' }}\"",
+            "restartTimeout": "10m"
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Docker.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-PowershellCore.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-WebPlatformInstaller.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsRestart",
+            "restartTimeout": "30m"
+          },
+          {
+            "type": "PowerShell",
+            "validExitCodes": [
+              0,
+              3010
+            ],
+            "inline":[
+              "Choco-Install -PackageName visualstudio2022buildtools -ArgumentList \"--all\", \"--nocache\", \"--locale\", \"En-us\""
+            ],
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "validExitCodes": [
+              0,
+              3010
+            ],
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-KubernetesTools.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsRestart",
+            "restartTimeout": "30m"
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Wix.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
             "inline": [
-                "bcdedit.exe /set TESTSIGNING ON"
+              "Choco-Install -PackageName windowsdriverkit11",
+              "Choco-Install -PackageName windowsdriverkit10"
             ],
-            "elevated_user": "{{user `install_user`}}",
-            "elevated_password": "{{user `install_password`}}"
-        },
-        {
-            "type": "powershell",
-            "environment_vars": [
-                "IMAGE_VERSION={{user `image_version`}}",
-                "IMAGE_OS={{user `image_os`}}",
-                "AGENT_TOOLSDIRECTORY={{user `agent_tools_directory`}}",
-                "IMAGEDATA_FILE={{user `imagedata_file`}}"
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-AzureCli.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-AzureDevOpsCli.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-CommonUtils.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-JavaTools.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Kotlin.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-OpenSSL.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "inline": [
+              "Choco-Install -PackageName service-fabric"
             ],
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Configure-Antivirus.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-PowerShellModules.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-WindowsFeatures.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Choco.ps1",
-                "{{ template_dir }}/scripts/Installers/Initialize-VM.ps1",
-                "{{ template_dir }}/scripts/Installers/Update-ImageData.ps1",
-                "{{ template_dir }}/scripts/Installers/Update-DotnetTLS.ps1"
-            ],
-            "execution_policy": "unrestricted"
-        },
-        {
-            "type": "windows-restart",
-            "check_registry": true,
-            "restart_check_command": "powershell -command \"& {while ( (Get-WindowsOptionalFeature -Online -FeatureName Containers -ErrorAction SilentlyContinue).State -ne 'Enabled' ) { Start-Sleep 30; Write-Output 'InProgress' }}\"",
-            "restart_timeout": "10m"
-        },
-        {
-            "type": "powershell",
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Install-Docker.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-PowershellCore.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-WebPlatformInstaller.ps1"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "restart_timeout": "30m"
-        },
-        {
-            "type": "powershell",
-            "valid_exit_codes": [
-                0,
-                3010
-            ],
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Install-VS.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-KubernetesTools.ps1"
-            ],
-            "elevated_user": "{{user `install_user`}}",
-            "elevated_password": "{{user `install_password`}}"
-        },
-        {
-            "type": "windows-restart",
-            "check_registry": true,
-            "restart_timeout": "10m"
-        },
-        {
-            "type": "powershell",
-            "pause_before": "2m",
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Install-Wix.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-WDK.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Vsix.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AzureCli.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AzureDevOpsCli.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-CommonUtils.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-JavaTools.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Kotlin.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-OpenSSL.ps1"
-            ]
-        },
-        {
-            "type": "powershell",
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Install-ServiceFabricSDK.ps1"
-            ],
-            "execution_policy": "remotesigned"
-        },
-        {
-            "type": "windows-restart",
-            "restart_timeout": "10m"
-        },
-        {
-            "type": "windows-shell",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsRestart",
+            "restartTimeout": "30m"
+          },
+          {
+            "type": "PowerShell",
             "inline": [
                 "wmic product where \"name like '%%microsoft azure powershell%%'\" call uninstall /nointeractive"
-            ]
-        },
-        {
-            "type": "powershell",
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Install-Ruby.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-PyPy.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Toolset.ps1",
-                "{{ template_dir }}/scripts/Installers/Configure-Toolset.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-NodeLts.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AndroidSDK.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AzureModules.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Pipx.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-PipxPackages.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Git.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-GitHub-CLI.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-PHP.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Rust.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Sbt.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Chrome.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Edge.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Firefox.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Selenium.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-IEWebDriver.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Apache.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Nginx.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Msys2.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-WinAppDriver.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-R.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AWS.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-DACFx.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-MysqlCli.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-SQLPowerShellTools.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-SQLOLEDBDriver.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-DotnetSDK.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Mingw64.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Haskell.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Stack.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Miniconda.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AzureCosmosDbEmulator.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Mercurial.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Zstd.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-NSIS.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Vcpkg.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-PostgreSQL.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-Bazel.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-AliyunCli.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-RootCA.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-MongoDB.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-CodeQLBundle.ps1",
-                "{{ template_dir }}/scripts/Installers/Disable-JITDebugger.ps1"
-            ]
-        },
-        {
-            "type": "powershell",
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Install-WindowsUpdates.ps1",
-                "{{ template_dir }}/scripts/Installers/Configure-DynamicPort.ps1",
-                "{{ template_dir }}/scripts/Installers/Configure-GDIProcessHandleQuota.ps1",
-                "{{ template_dir }}/scripts/Installers/Configure-Shell.ps1",
-                "{{ template_dir }}/scripts/Installers/Enable-DeveloperMode.ps1",
-                "{{ template_dir }}/scripts/Installers/Install-LLVM.ps1"
             ],
-            "elevated_user": "{{user `install_user`}}",
-            "elevated_password": "{{user `install_password`}}"
-        },
-        {
-            "type": "windows-restart",
-            "check_registry": true,
-            "restart_check_command": "powershell -command \"& {if ((-not (Get-Process TiWorker.exe -ErrorAction SilentlyContinue)) -and (-not [System.Environment]::HasShutdownStarted) ) { Write-Output 'Restart complete' }}\"",
-            "restart_timeout": "30m"
-        },
-        {
-            "type": "powershell",
-            "pause_before": "2m",
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Wait-WindowsUpdatesForInstall.ps1",
-                "{{ template_dir }}/scripts/Tests/RunAll-Tests.ps1"
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Ruby.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-PyPy.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Toolset.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Configure-Toolset.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-NodeLts.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-AndroidSDK.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-AzureModules.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Pipx.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-PipxPackages.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Git.ps1",
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-GitHub-CLI.ps1",
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-PHP.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Rust.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Sbt.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Chrome.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Edge.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Firefox.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Selenium.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-IEWebDriver.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Apache.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Nginx.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Msys2.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-WinAppDriver.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-R.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-DACFx.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-SQLPowerShellTools.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-SQLOLEDBDriver.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-DotnetSDK.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Mingw64.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Haskell.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Stack.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Miniconda.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-AzureCosmosDbEmulator.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Zstd.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-NSIS.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Vcpkg.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-PostgreSQL.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-Bazel.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-RootCA.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-MongoDB.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-CodeQLBundle.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Disable-JITDebugger.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Configure-DynamicPort.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Configure-GDIProcessHandleQuota.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Configure-Shell.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Enable-DeveloperMode.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-LLVM.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsRestart",
+            "restartCheckCommand": "powershell -command \"& {if ((-not (Get-Process TiWorker.exe -ErrorAction SilentlyContinue)) -and (-not [System.Environment]::HasShutdownStarted) ) { Write-Output 'Restart complete' }}\"",
+            "restartTimeout": "30m"
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Tests/RunAll-Tests.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsUpdate",
+            "searchCriteria": "IsInstalled=0",
+            "filters": [
+              "exclude:$_.Title -like '*Preview*'",
+              "include:$true"
             ]
-        },
-        {
-            "type": "powershell",
-            "inline": [
-                "if (-not (Test-Path {{user `image_folder`}}\\Tests\\testResults.xml)) { throw '{{user `image_folder`}}\\Tests\\testResults.xml not found' }"
-            ]
-        },
-        {
-            "type": "powershell",
-            "inline": [
-                "pwsh -File '{{user `image_folder`}}\\SoftwareReport\\SoftwareReport.Generator.ps1'"
-            ],
-            "environment_vars": [
-                "IMAGE_VERSION={{user `image_version`}}"
-            ]
-        },
-        {
-            "type": "powershell",
-            "inline": [
-                "if (-not (Test-Path C:\\software-report.md)) { throw 'C:\\software-report.md not found' }",
-                "if (-not (Test-Path C:\\software-report.json)) { throw 'C:\\software-report.json not found' }"
-            ]
-        },
-        {
-            "type": "file",
-            "source": "C:\\software-report.md",
-            "destination": "{{ template_dir }}/Windows2022-Readme.md",
-            "direction": "download"
-        },
-        {
-            "type": "file",
-            "source": "C:\\software-report.json",
-            "destination": "{{ template_dir }}/software-report.json",
-            "direction": "download"
-        },
-        {
-            "type": "powershell",
-            "skip_clean": true,
-            "scripts": [
-                "{{ template_dir }}/scripts/Installers/Run-NGen.ps1",
-                "{{ template_dir }}/scripts/Installers/Finalize-VM.ps1",
-                "{{ template_dir }}/scripts/Installers/Warmup-User.ps1"
-            ],
-            "environment_vars": [
-                "INSTALL_USER={{user `install_user`}}"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "restart_timeout": "10m"
-        },
-        {
-            "type": "powershell",
-            "inline": [
-                "if( Test-Path $Env:SystemRoot\\System32\\Sysprep\\unattend.xml ){ rm $Env:SystemRoot\\System32\\Sysprep\\unattend.xml -Force}",
-                "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /mode:vm /quiet /quit",
-                "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
-            ]
-        }
-    ]
-}
+          },
+          {
+            "type": "WindowsRestart",
+            "restartTimeout": "30m"
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Run-NGen.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Finalize-VM.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "PowerShell",
+            "scriptUri": "https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Warmup-User.ps1",
+            "runAsSystem": true,
+            "runElevated": true
+          },
+          {
+            "type": "WindowsRestart",
+            "restartTimeout": "30m"
+          }
+        ]
+      }
+    }
+  }

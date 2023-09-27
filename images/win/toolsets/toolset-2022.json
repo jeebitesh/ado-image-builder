@@ -84,7 +84,16 @@
         { "name": "SqlServer" },
         { "name": "VSSetup" },
         { "name": "Microsoft.Graph" },
-        {"name": "AWSPowershell"}
+        { "name": "AWSPowershell"},
+        { "name": "powershell-yaml" },
+        { "name": "PSDepend" },
+        { "name": "PSWriteHtml" },
+        { "name": "PSWriteColor" },
+        { "name": "MicrosoftTeams" },
+        { "name": "PlatyPS" },
+        { "name": "posh-git" },
+        { "name": "Selenium" },
+        { "name": "Az" }
     ],
     "azureModules": [
         {
@@ -170,7 +179,7 @@
     "visualStudio": {
         "version" : "2022",
         "subversion" : "17",
-        "edition" : "Enterprise",
+        "edition" : "Community",
         "channel": "release",
         "workloads": [
             "Component.Dotfuscator",
