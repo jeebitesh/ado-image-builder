@@ -14,3 +14,4 @@ while($true) {
   Start-Sleep -s 5
 }
 Write-Output '>>> Sysprep complete ...'
+exit
