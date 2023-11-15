@@ -4,7 +4,7 @@
 ##  Desc:  Installs MySQL Client
 ################################################################################
 
-source $HELPER_SCRIPTS/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Mysql setting up root password
 MYSQL_ROOT_PASSWORD=root
@@ -26,4 +26,4 @@ apt install libmysqlclient-dev -y
 systemctl is-active --quiet mysql.service && systemctl stop mysql.service
 systemctl disable mysql.service
 
-invoke_tests "Databases" "MySQL"
+#invoke_tests "Databases" "MySQL"

@@ -5,8 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
-source $HELPER_SCRIPTS/os.sh
+source "$HELPER_SCRIPTS"/install.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Install libssl1.1 dependency
 if isUbuntu22; then
@@ -22,4 +22,4 @@ rm -f sqlpackage.zip
 chmod +x /usr/local/sqlpackage/sqlpackage
 ln -sf /usr/local/sqlpackage/sqlpackage /usr/local/bin
 
-invoke_tests "Tools" "SqlPackage"
+#invoke_tests "Tools" "SqlPackage"

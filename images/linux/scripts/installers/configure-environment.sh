@@ -1,11 +1,11 @@
 #!/bin/bash -e
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Set ImageVersion and ImageOS env variables
-echo ImageVersion=$IMAGE_VERSION | tee -a /etc/environment
-echo ImageOS=$IMAGE_OS | tee -a /etc/environment
+echo ImageVersion="$IMAGE_VERSION" | tee -a /etc/environment
+echo ImageOS="$IMAGE_OS" | tee -a /etc/environment
 
 # Set the ACCEPT_EULA variable to Y value to confirm your acceptance of the End-User Licensing Agreement
 echo ACCEPT_EULA=Y | tee -a /etc/environment
@@ -39,13 +39,13 @@ echo 'fs.inotify.max_user_instances=1280' | tee -a /etc/sysctl.conf
 # https://github.com/actions/runner-images/pull/7860
 netfilter_rule='/etc/udev/rules.d/50-netfilter.rules'
 rulesd="$(dirname "${netfilter_rule}")"
-mkdir -p $rulesd
+mkdir -p "$rulesd"
 touch $netfilter_rule
 echo 'ACTION=="add", SUBSYSTEM=="module", KERNEL=="nf_conntrack", RUN+="/usr/sbin/sysctl net.netfilter.nf_conntrack_tcp_be_liberal=1"' | tee -a $netfilter_rule
 
 # Create symlink for tests running
-chmod +x $HELPER_SCRIPTS/invoke-tests.sh
-ln -s $HELPER_SCRIPTS/invoke-tests.sh /usr/local/bin/invoke_tests
+chmod +x "$HELPER_SCRIPTS"/invoke-tests.sh
+ln -s "$HELPER_SCRIPTS"/invoke-tests.sh /usr/local/bin/invoke_tests
 
 # Disable motd updates metadata
 sed -i 's/ENABLED=1/ENABLED=0/g' /etc/default/motd-news

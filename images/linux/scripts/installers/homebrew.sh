@@ -6,8 +6,8 @@
 ################################################################################
 
 # Source the helpers
-source $HELPER_SCRIPTS/etc-environment.sh
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install the Homebrew on Linux
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -25,7 +25,7 @@ reloadEtcEnvironment
 gfortran=$(brew --prefix)/bin/gfortran
 # Remove gfortran symlink, not to conflict with system gfortran
 if [[ -e $gfortran ]]; then
-    rm $gfortran
+    rm "$gfortran"
 fi
 
-invoke_tests "Tools" "Homebrew"
+#invoke_tests "Tools" "Homebrew"

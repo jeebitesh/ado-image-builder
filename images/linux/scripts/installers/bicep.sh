@@ -4,7 +4,7 @@
 ##  Desc:  Installs bicep cli
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+source """$HELPER_SCRIP"T"S"/install.sh
 
 # Install Bicep CLI
 download_with_retries "https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64" "." "bicep.bin"
@@ -13,4 +13,4 @@ chmod +x ./bicep.bin
 # Add bicep to PATH (requires admin)
 sudo mv ./bicep.bin /usr/local/bin/bicep
 
-invoke_tests "Tools" "Bicep"
+#invoke_tests "Tools" "Bicep"

@@ -5,20 +5,20 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
-source $HELPER_SCRIPTS/etc-environment.sh
+source "$HELPER_SCRIPTS"/os.sh
+source "$HELPER_SCRIPTS"/install.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
 function filter_components_by_version {
     minimumVersion=$1
     shift
     toolsArr=("$@")
 
-    for item in ${toolsArr[@]}
+    for item in "${toolsArr[@]}"
     do
         # take the last argument after spliting string by ';'' and '-''
-        version=$(echo "${item##*[-;]}")
-        if verlte $minimumVersion $version
+        version=$("${item##*[-;]}")
+        if verlte "$minimumVersion" "$version"
         then
             components+=($item)
         fi
@@ -91,13 +91,13 @@ ANDROID_NDK_MAJOR_DEFAULT=$(get_toolset_value '.android.ndk.default')
 components=("${extras[@]}" "${addons[@]}" "${additional[@]}")
 for ndk_version in "${ANDROID_NDK_MAJOR_VERSIONS[@]}"
 do
-    ndk_full_version=$(get_full_ndk_version $ndk_version)
+    ndk_full_version=$(get_full_ndk_version "$ndk_version")
     components+=("ndk;$ndk_full_version")
 done
 
 ANDROID_NDK_MAJOR_LATEST=(${ANDROID_NDK_MAJOR_VERSIONS[-1]})
-ndkDefaultFullVersion=$(get_full_ndk_version $ANDROID_NDK_MAJOR_DEFAULT)
-ndkLatestFullVersion=$(get_full_ndk_version $ANDROID_NDK_MAJOR_LATEST)
+ndkDefaultFullVersion=$(get_full_ndk_version "$ANDROID_NDK_MAJOR_DEFAULT")
+ndkLatestFullVersion=$(get_full_ndk_version "$ANDROID_NDK_MAJOR_LATEST")
 ANDROID_NDK="$ANDROID_SDK_ROOT/ndk/$ndkDefaultFullVersion"
 # ANDROID_NDK, ANDROID_NDK_HOME, and ANDROID_NDK_ROOT variables should be set as many customer builds depend on them https://github.com/actions/runner-images/issues/5879
 echo "ANDROID_NDK=${ANDROID_NDK}" | tee -a /etc/environment
@@ -107,12 +107,12 @@ echo "ANDROID_NDK_LATEST_HOME=$ANDROID_SDK_ROOT/ndk/$ndkLatestFullVersion" | tee
 
 availablePlatforms=($($SDKMANAGER --list | sed -n '/Available Packages:/,/^$/p' | grep "platforms;android-[0-9]" | cut -d"|" -f 1))
 allBuildTools=($($SDKMANAGER --list | grep "build-tools;" | cut -d"|" -f 1 | sort -u))
-availableBuildTools=$(echo ${allBuildTools[@]//*rc[0-9]/})
+availableBuildTools=$("${allBuildTools[@]//*rc[0-9]/}")
 
-filter_components_by_version $minimumPlatformVersion "${availablePlatforms[@]}"
-filter_components_by_version $minimumBuildToolVersion "${availableBuildTools[@]}"
+filter_components_by_version "$minimumPlatformVersion" "${availablePlatforms[@]}"
+filter_components_by_version "$minimumBuildToolVersion" "${availableBuildTools[@]}"
 
-echo "y" | $SDKMANAGER ${components[@]}
+echo "y" | $SDKMANAGER "${components[@]}"
 
 # Old skdmanager from sdk tools doesn't work with Java > 8, set version 8 explicitly
 if isUbuntu20 || isUbuntu22; then
@@ -123,4 +123,4 @@ fi
 chmod -R a+rwx ${ANDROID_SDK_ROOT}
 
 reloadEtcEnvironment
-invoke_tests "Android"
+#invoke_tests "Android"

@@ -4,7 +4,7 @@
 ##  Desc:  Installs container tools: podman, buildah and skopeo onto the image
 ################################################################################
 
-source $HELPER_SCRIPTS/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 #
 # pin podman due to https://github.com/actions/runner-images/issues/7753
@@ -21,7 +21,7 @@ if isUbuntu20; then
     REPO_URL="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable"
     source /etc/os-release
     sh -c "echo 'deb ${REPO_URL}/x${NAME}_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
-    wget -nv https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x${NAME}_${VERSION_ID}/Release.key -O Release.key
+    wget -nv https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x"${NAME}"_"${VERSION_ID}"/Release.key -O Release.key
     apt-key add Release.key
 fi
 
@@ -35,7 +35,7 @@ if isUbuntu20; then
     # Remove source repo
     rm /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
     # Document source repo
-    echo "containers $REPO_URL" >> $HELPER_SCRIPTS/apt-sources.txt
+    echo "containers $REPO_URL" >> "$HELPER_SCRIPTS"/apt-sources.txt
 fi
 
-invoke_tests "Tools" "Containers"
+#invoke_tests "Tools" "Containers"

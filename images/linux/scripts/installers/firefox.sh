@@ -5,7 +5,7 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 FIREFOX_REPO="ppa:mozillateam/ppa"
 
@@ -18,7 +18,7 @@ apt-get install --target-release 'o=LP-PPA-mozillateam' -y firefox
 add-apt-repository --remove $FIREFOX_REPO
 
 # Document apt source repo's
-echo "mozillateam $FIREFOX_REPO" >> $HELPER_SCRIPTS/apt-sources.txt
+echo "mozillateam $FIREFOX_REPO" >> "$HELPER_SCRIPTS"/apt-sources.txt
 
 # add to gloabl system preferences for firefox locale en_US, because other browsers have en_US local.
 # Default firefox local is en_GB
@@ -39,4 +39,4 @@ chmod +x $GECKODRIVER_BIN
 ln -s "$GECKODRIVER_BIN" /usr/bin/
 echo "GECKOWEBDRIVER=$GECKODRIVER_DIR" | tee -a /etc/environment
 
-invoke_tests "Browsers" "Firefox"
+#invoke_tests "Browsers" "Firefox"

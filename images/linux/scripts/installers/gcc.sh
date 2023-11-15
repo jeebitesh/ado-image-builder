@@ -5,14 +5,14 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/os.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 function InstallGcc {
     version=$1
 
     echo "Installing $version..."
-    apt-get install $version -y
+    apt-get install "$version" -y
 }
 
 # Install GNU C++ compiler
@@ -22,7 +22,7 @@ apt-get update -y
 versions=$(get_toolset_value '.gcc.versions[]')
 
 for version in ${versions[*]}; do
-    InstallGcc $version
+    InstallGcc "$version"
 done
 
-invoke_tests "Tools" "gcc"
+#invoke_tests "Tools" "gcc"

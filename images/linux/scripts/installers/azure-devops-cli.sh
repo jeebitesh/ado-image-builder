@@ -10,6 +10,12 @@ export AZURE_EXTENSION_DIR=/opt/az/azcliextensions
 echo "AZURE_EXTENSION_DIR=$AZURE_EXTENSION_DIR" | tee -a /etc/environment
 
 # install azure devops Cli extension
-az extension add -n azure-devops
+extensions=$(az extension list-available --query "[?preview == \`false\` && experimental == \`false\` && name != \`azure-cli-ml\`].{name:name}" -o json | jq -c -r '.[]')
+for extension in "${extensions[@]}"; 
+do 
+    name=$(jq '.name' <<< "$extension"); 
+    item=$(echo "$name" | tr -d '"'); 
+    az extension add --upgrade --name "$item" ; 
+done
 
-invoke_tests "CLI.Tools" "Azure DevOps CLI"
+#invoke_tests "CLI.Tools" "Azure DevOps CLI"

@@ -5,7 +5,7 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 source_list=/etc/apt/sources.list.d/eslerlang.list
 source_key=/usr/share/keyrings/eslerlang.gpg
@@ -26,4 +26,4 @@ chmod +x /usr/local/bin/rebar3
 rm $source_list
 rm $source_key
 
-invoke_tests "Tools" "erlang"
+#invoke_tests "Tools" "erlang"

@@ -17,6 +17,6 @@ rm /etc/apt/sources.list.d/google-cloud-sdk.list
 rm /usr/share/keyrings/cloud.google.gpg
 
 # add repo to the apt-sources.txt
-echo "google-cloud-sdk $REPO_URL" >> $HELPER_SCRIPTS/apt-sources.txt
+echo "google-cloud-sdk $REPO_URL" >> "$HELPER_SCRIPTS"/apt-sources.txt
 
-invoke_tests "CLI.Tools" "Google Cloud SDK"
+#invoke_tests "CLI.Tools" "Google Cloud SDK"

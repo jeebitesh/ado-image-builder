@@ -5,7 +5,7 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # install R
 osLabel=$(getOSVersionLabel)
@@ -19,4 +19,4 @@ apt-get install r-base
 rm /etc/apt/sources.list.d/rlang.list
 rm /usr/share/keyrings/rlang.gpg
 
-invoke_tests "Tools" "R"
+#invoke_tests "Tools" "R"

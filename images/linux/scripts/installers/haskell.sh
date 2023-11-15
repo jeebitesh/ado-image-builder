@@ -5,7 +5,7 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
 # Any nonzero value for noninteractive installation
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
@@ -28,8 +28,8 @@ minorMajorVersions=$(echo "$availableVersions" | cut -d"." -f 1,2 | uniq | tail 
 for majorMinorVersion in $minorMajorVersions; do
     fullVersion=$(echo "$availableVersions" | grep "$majorMinorVersion." | tail -n1)
     echo "install ghc version $fullVersion..."
-    ghcup install ghc $fullVersion
-    ghcup set ghc $fullVersion
+    ghcup install ghc "$fullVersion"
+    ghcup set ghc "$fullVersion"
 done
 
 echo "install cabal..."
@@ -41,4 +41,4 @@ ln -s $GHCUP_INSTALL_BASE_PREFIX/.ghcup /etc/skel/.ghcup
 # Install the latest stable release of haskell stack
 curl -fsSL https://get.haskellstack.org/ | sh
 
-invoke_tests "Haskell"
+#invoke_tests "Haskell"

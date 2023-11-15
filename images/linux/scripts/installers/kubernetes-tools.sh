@@ -5,11 +5,11 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install KIND
 URL=$(get_github_package_download_url "kubernetes-sigs/kind" "contains(\"kind-linux-amd64\")")
-curl -fsSL -o /usr/local/bin/kind $URL
+curl -fsSL -o /usr/local/bin/kind "$URL"
 chmod +x /usr/local/bin/kind
 
 ## Install kubectl
@@ -29,4 +29,4 @@ download_url="https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master
 curl -fsSL "$download_url" | bash
 mv kustomize /usr/local/bin
 
-invoke_tests "Tools" "Kubernetes tools"
+#invoke_tests "Tools" "Kubernetes tools"

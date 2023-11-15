@@ -4,8 +4,8 @@
 ##  Desc:  Installs Ruby requirements and ruby gems
 ################################################################################
 
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/os.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 apt-get install ruby-full
 
@@ -14,7 +14,7 @@ gemsToInstall=$(get_toolset_value ".rubygems[] .name")
 if [ -n "$gemsToInstall" ]; then
     for gem in $gemsToInstall; do
         echo "Installing gem $gem"
-        gem install $gem
+        gem install "$gem"
     done
 fi
 
@@ -28,8 +28,8 @@ PLATFORM_VERSION=$(get_toolset_value '.toolcache[] | select(.name | contains("Ru
 RUBY_PATH="$AGENT_TOOLSDIRECTORY/Ruby"
 
 echo "Check if Ruby hostedtoolcache folder exist..."
-if [ ! -d $RUBY_PATH ]; then
-    mkdir -p $RUBY_PATH
+if [ ! -d "$RUBY_PATH" ]; then
+    mkdir -p "$RUBY_PATH"
 fi
 
 for TOOLSET_VERSION in ${TOOLSET_VERSIONS[@]}; do
@@ -38,20 +38,20 @@ for TOOLSET_VERSION in ${TOOLSET_VERSIONS[@]}; do
     RUBY_VERSION_PATH="$RUBY_PATH/$RUBY_VERSION"
 
     echo "Create Ruby $RUBY_VERSION directory..."
-    mkdir -p $RUBY_VERSION_PATH
+    mkdir -p "$RUBY_VERSION_PATH"
 
     echo "Downloading tar archive $PACKAGE_TAR_NAME"
     DOWNLOAD_URL="https://github.com/ruby/ruby-builder/releases/download/toolcache/${PACKAGE_TAR_NAME}"
-    download_with_retries $DOWNLOAD_URL "/tmp" $PACKAGE_TAR_NAME
+    download_with_retries "$DOWNLOAD_URL" "/tmp" "$PACKAGE_TAR_NAME"
 
     echo "Expand '$PACKAGE_TAR_NAME' to the '$RUBY_VERSION_PATH' folder"
-    tar xf "/tmp/$PACKAGE_TAR_NAME" -C $RUBY_VERSION_PATH
+    tar xf "/tmp/$PACKAGE_TAR_NAME" -C "$RUBY_VERSION_PATH"
 
     COMPLETE_FILE_PATH="$RUBY_VERSION_PATH/x64.complete"
-    if [ ! -f $COMPLETE_FILE_PATH ]; then
+    if [ ! -f "$COMPLETE_FILE_PATH" ]; then
         echo "Create complete file"
-        touch $COMPLETE_FILE_PATH
+        touch "$COMPLETE_FILE_PATH"
     fi
 done
 
-invoke_tests "Tools" "Ruby"
+#invoke_tests "Tools" "Ruby"

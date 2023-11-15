@@ -4,7 +4,7 @@
 ##  Desc:  Install the CodeQL CLI Bundle to the toolcache.
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Retrieve the CLI versions and bundle tags of the latest two CodeQL bundles.
 base_url="$(curl -fsSL https://raw.githubusercontent.com/github/codeql-action/v2/src/defaults.json)"

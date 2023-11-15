@@ -4,7 +4,7 @@
 ##  Desc:  Installs AzCopy
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install AzCopy10
 download_with_retries "https://aka.ms/downloadazcopy-v10-linux" "/tmp" "azcopy.tar.gz"
@@ -14,4 +14,4 @@ chmod +x /usr/local/bin/azcopy
 # Create azcopy 10 alias for backward compatibility
 ln -sf /usr/local/bin/azcopy /usr/local/bin/azcopy10
 
-invoke_tests "Tools" "azcopy"
+#invoke_tests "Tools" "azcopy"

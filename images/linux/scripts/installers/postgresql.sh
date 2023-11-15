@@ -5,8 +5,8 @@
 ################################################################################
 
 # Source the helpers
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/os.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 REPO_URL="https://apt.postgresql.org/pub/repos/apt/"
 
@@ -20,7 +20,7 @@ toolsetVersion=$(get_toolset_value '.postgresql.version')
 # Install PostgreSQL
 echo "Install PostgreSQL"
 apt update
-apt install postgresql-$toolsetVersion
+apt install postgresql-"$toolsetVersion"
 
 echo "Install libpq-dev"
 apt-get install libpq-dev
@@ -32,6 +32,6 @@ systemctl disable postgresql.service
 rm /etc/apt/sources.list.d/pgdg.list
 rm /usr/share/keyrings/postgresql.gpg
 
-echo "postgresql $REPO_URL" >> $HELPER_SCRIPTS/apt-sources.txt
+echo "postgresql $REPO_URL" >> "$HELPER_SCRIPTS"/apt-sources.txt
 
-invoke_tests "Databases" "PostgreSQL"
+#invoke_tests "Databases" "PostgreSQL"

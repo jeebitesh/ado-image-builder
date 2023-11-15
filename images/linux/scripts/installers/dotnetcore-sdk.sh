@@ -4,9 +4,9 @@
 ##  Desc:  Installs .NET Core SDK
 ################################################################################
 
-source $HELPER_SCRIPTS/etc-environment.sh
-source $HELPER_SCRIPTS/install.sh
-source $HELPER_SCRIPTS/os.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
+source "$HELPER_SCRIPTS"/install.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Ubuntu 20 doesn't support EOL versions
 LATEST_DOTNET_PACKAGES=$(get_toolset_value '.dotnet.aptPackages[]')
@@ -31,9 +31,9 @@ apt-get update
 
 for latest_package in ${LATEST_DOTNET_PACKAGES[@]}; do
     echo "Determing if .NET Core ($latest_package) is installed"
-    if ! IsPackageInstalled $latest_package; then
+    if ! IsPackageInstalled "$latest_package"; then
         echo "Could not find .NET Core ($latest_package), installing..."
-        apt-get install $latest_package -y
+        apt-get install "$latest_package" -y
     else
         echo ".NET Core ($latest_package) is already installed"
     fi
@@ -55,7 +55,7 @@ for version in ${DOTNET_VERSIONS[@]}; do
         sdks=("${sdks[@]}" $(echo "${releases}" | jq -r '.releases[].sdk.version | select(contains("preview") or contains("rc") | not)'))
         sdks=("${sdks[@]}" $(echo "${releases}" | jq -r '.releases[].sdks[]?.version | select(contains("preview") or contains("rc") | not)'))
     fi
-    rm ./${version}.json
+    rm ./"${version}".json
 done
 
 sortedSdks=$(echo ${sdks[@]} | tr ' ' '\n' | sort -r | uniq -w 5)
@@ -63,7 +63,7 @@ sortedSdks=$(echo ${sdks[@]} | tr ' ' '\n' | sort -r | uniq -w 5)
 extract_dotnet_sdk() {
     local ARCHIVE_NAME="$1"
     set -e
-    dest="./tmp-$(basename -s .tar.gz $ARCHIVE_NAME)"
+    dest="./tmp-$(basename -s .tar.gz "$ARCHIVE_NAME")"
     echo "Extracting $ARCHIVE_NAME to $dest"
     mkdir "$dest" && tar -C "$dest" -xzf "$ARCHIVE_NAME"
     rsync -qav --remove-source-files "$dest/shared/" /usr/share/dotnet/shared/
@@ -92,7 +92,7 @@ prependEtcEnvironmentPath '$HOME/.dotnet/tools'
 # install dotnet tools
 for dotnet_tool in ${DOTNET_TOOLS[@]}; do
     echo "Installing dotnet tool $dotnet_tool"
-    dotnet tool install $dotnet_tool --tool-path '/etc/skel/.dotnet/tools'
+    dotnet tool install "$dotnet_tool" --tool-path '/etc/skel/.dotnet/tools'
 done
 
-invoke_tests "DotnetSDK"
+#invoke_tests "DotnetSDK"

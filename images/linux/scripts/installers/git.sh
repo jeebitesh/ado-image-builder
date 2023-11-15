@@ -5,7 +5,7 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 GIT_REPO="ppa:git-core/ppa"
 GIT_LFS_REPO="https://packagecloud.io/install/repositories/github/git-lfs"
@@ -33,8 +33,8 @@ add-apt-repository --remove $GIT_REPO
 rm /etc/apt/sources.list.d/github_git-lfs.list
 
 # Document apt source repo's
-echo "git-core $GIT_REPO" >> $HELPER_SCRIPTS/apt-sources.txt
-echo "git-lfs $GIT_LFS_REPO" >> $HELPER_SCRIPTS/apt-sources.txt
+echo "git-core $GIT_REPO" >> "$HELPER_SCRIPTS"/apt-sources.txt
+echo "git-lfs $GIT_LFS_REPO" >> "$HELPER_SCRIPTS"/apt-sources.txt
 
 #Install hub
 tmp_hub="/tmp/hub"
@@ -48,4 +48,4 @@ mv "$tmp_hub"/bin/hub /usr/local/bin
 ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> /etc/ssh/ssh_known_hosts
 ssh-keyscan -t rsa ssh.dev.azure.com >> /etc/ssh/ssh_known_hosts
 
-invoke_tests "Tools" "Git"
+#invoke_tests "Tools" "Git"

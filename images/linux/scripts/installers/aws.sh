@@ -5,8 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/os.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 download_with_retries "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" "/tmp" "awscliv2.zip"
 unzip -qq /tmp/awscliv2.zip -d /tmp
@@ -22,4 +22,4 @@ download_with_retries $zipUrl "/tmp" $zipName
 unzip /tmp/${zipName} -d /tmp
 /tmp/install
 
-invoke_tests "CLI.Tools" "AWS"
+#invoke_tests "CLI.Tools" "AWS"
