@@ -24,20 +24,20 @@ Function Install-Asset {
     Pop-Location
 }
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference="Stop"
 
 # Get toolset content
-$toolset = Get-Content -Path "$env:INSTALLER_SCRIPT_FOLDER/toolset.json" -Raw
+$toolset=Get-Content -Path "$env:INSTALLER_SCRIPT_FOLDER/toolset.json" -Raw
 
-$tools = ConvertFrom-Json -InputObject $toolset | Select-Object -ExpandProperty toolcache | Where-Object {$_.url -ne $null }
+$tools=ConvertFrom-Json -InputObject $toolset | Select-Object -ExpandProperty toolcache | Where-Object {$_.url -ne $null }
 
 foreach ($tool in $tools) {
     # Get versions manifest for current tool
-    $assets = Invoke-RestMethod $tool.url
+    $assets=Invoke-RestMethod $tool.url
 
     # Get github release asset for each version
     foreach ($toolVersion in $tool.versions) {
-        $asset = $assets | Where-Object version -like $toolVersion `
+        $asset=$assets | Where-Object version -like $toolVersion `
         | Select-Object -ExpandProperty files `
         | Where-Object { ($_.platform -eq $tool.platform) -and ($_.platform_version -eq $tool.platform_version)} `
         | Select-Object -First 1
