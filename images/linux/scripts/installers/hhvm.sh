@@ -5,7 +5,7 @@
 ################################################################################
 
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xB4112585D386EB94
-add-apt-repository https://dl.hhvm.com/ubuntu
+add-apt-repository https://dl.hhvm.com/ubuntu -y
 apt-get update
 apt-get -qq install -y hhvm
 

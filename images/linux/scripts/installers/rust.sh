@@ -29,6 +29,6 @@ fi
 rm -rf ${CARGO_HOME}/registry/*
 
 # Update /etc/environemnt
-prependEtcEnvironmentPath '$HOME/.cargo/bin'
+prependEtcEnvironmentPath "$HOME/.cargo/bin"
 
 #invoke_tests "Tools" "Rust"

@@ -5,7 +5,7 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source ""$HELPER_SCRIPT"S"/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 function GetChromiumRevision {
     CHROME_REVISION=$1
@@ -15,20 +15,20 @@ function GetChromiumRevision {
     CHROME_REVISION_PREFIX=${CHROME_REVISION:0:${#CHROME_REVISION}/2+1}
     SEARCH_URL="https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=Linux_x64"
     # Revision can include a hash instead of a number. Need to filter it out https://github.com/actions/runner-images/issues/5256
-    REVISIONS_AVAILABLE=$(curl -s ""$SEARCH_UR"L""/"${CHROME_REVISION_PREF"IX}" | jq -r '.prefixes[]' | grep -E "Linux_x64\/[0-9]+\/"| cut -d "/" -f 2 | sort --version-sort)
+    REVISIONS_AVAILABLE=$(curl -s "$SEARCH_URL"/"${CHROME_REVISION_PREFIX}" | jq -r '.prefixes[]' | grep -E "Linux_x64\/[0-9]+\/"| cut -d "/" -f 2 | sort --version-sort)
 
     # If required Chromium revision is not found in the list
     # we should have to decrement the revision number until we find one.
     # This is mentioned in the documentation we use for this installation:
     # https://www.chromium.org/getting-involved/download-chromium
-    LATEST_VALID_REVISION=$(echo ""$REVISIONS_AVAILABL"E" | cut -f 1 -d " ")
+    LATEST_VALID_REVISION=$(echo "$REVISIONS_AVAILABLE" | cut -f 1 -d " ")
     for REVISION in $REVISIONS_AVAILABLE; do
         if [ "$CHROME_REVISION" -lt "$REVISION" ]; then
           break
         fi
         LATEST_VALID_REVISION=$REVISION
     done
-    echo ""$LATEST_VALID_REVISIO"N"
+    echo "$LATEST_VALID_REVISION"
 }
 
 # Download and install Google Chrome
@@ -59,7 +59,7 @@ CHROMEDRIVER_DIR="/usr/local/share/chromedriver-linux64"
 CHROMEDRIVER_BIN="$CHROMEDRIVER_DIR/chromedriver"
 
 echo "Installing chromedriver version $CHROMEDRIVER_VERSION"
-download_with_retries ""$CHROMEDRIVER_UR"L" "/tmp" $CHROMEDRIVER_ARCHIVE
+download_with_retries "$CHROMEDRIVER_URL" "/tmp" $CHROMEDRIVER_ARCHIVE
 unzip -qq /tmp/$CHROMEDRIVER_ARCHIVE -d /usr/local/share
 
 chmod +x $CHROMEDRIVER_BIN
@@ -68,16 +68,16 @@ echo "CHROMEWEBDRIVER=$CHROMEDRIVER_DIR" | tee -a /etc/environment
 
 # Download and unpack Chromium
 CHROME_REVISION=$(echo "${CHROME_VERSIONS_JSON}" | jq -r '.builds["'"$CHROME_VERSION"'"].revision')
-CHROMIUM_REVISION=$(GetChromiumRevision ""$CHROME_REVISIO"N")
+CHROMIUM_REVISION=$(GetChromiumRevision "$CHROME_REVISION")
 CHROMIUM_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${CHROMIUM_REVISION}%2Fchrome-linux.zip?alt=media"
 CHROMIUM_ARCHIVE="${CHROMIUM_REVISION}-chromium-linux.zip"
 CHROMIUM_DIR="/usr/local/share/chromium"
 CHROMIUM_BIN="${CHROMIUM_DIR}/chrome-linux/chrome"
 
 echo "Installing chromium revision $CHROMIUM_REVISION"
-download_with_retries ""$CHROMIUM_UR"L" "/tmp"" "$CHROMIUM_ARCH"IVE"
+download_with_retries "$CHROMIUM_URL" "/tmp" "$CHROMIUM_ARCHIVE"
 mkdir $CHROMIUM_DIR
-unzip -qq /tmp/""$CHROMIUM_ARCHIV"E" -d $CHROMIUM_DIR
+unzip -qq /tmp/"$CHROMIUM_ARCHIVE" -d $CHROMIUM_DIR
 
 ln -s $CHROMIUM_BIN /usr/bin/chromium
 ln -s $CHROMIUM_BIN /usr/bin/chromium-browser

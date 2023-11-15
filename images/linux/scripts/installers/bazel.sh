@@ -4,12 +4,12 @@
 ##  Desc:  Installs Bazel and Bazelisk (A user-friendly launcher for Bazel)
 ################################################################################
 
-source ""$HELPER_SCRIPT"S"/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install bazelisk
 npm install -g @bazel/bazelisk
 
 # run bazelisk once in order to instal /usr/local/bin/bazel binary
-sudo -u ""$SUDO_USE"R" bazel version
+sudo -u "$SUDO_USER" bazel version
 
 #invoke_tests "Tools" "Bazel"

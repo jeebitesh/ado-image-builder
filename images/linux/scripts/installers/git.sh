@@ -29,7 +29,7 @@ apt-get install -y git-lfs
 apt-get install git-ftp -y
 
 # Remove source repo's
-add-apt-repository --remove $GIT_REPO
+add-apt-repository --remove $GIT_REPO -y
 rm /etc/apt/sources.list.d/github_git-lfs.list
 
 # Document apt source repo's
