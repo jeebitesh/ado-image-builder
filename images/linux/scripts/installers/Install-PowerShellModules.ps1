@@ -15,7 +15,7 @@ $modules=(Get-ToolsetContent).powershellModules
 
 foreach($module in $modules)
 {
-    $moduleName = $module.name
+    $moduleName=$module.name
     Write-Host "Installing ${moduleName} module"
     if ($module.versions)
     {

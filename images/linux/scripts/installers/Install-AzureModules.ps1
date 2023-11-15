@@ -20,7 +20,7 @@ foreach ($module in $modules)
     $assets=Invoke-RestMethod $module.url
     # Get github release asset for each version
     foreach ($toolVersion in $module.zip_versions) {
-        $asset = $assets | Where-Object version -eq $toolVersion `
+        $asset=$assets | Where-Object version -eq $toolVersion `
         | Select-Object -ExpandProperty files `
         | Select-Object -First 1
 
