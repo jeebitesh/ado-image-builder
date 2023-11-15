@@ -3,12 +3,12 @@ Import-Module "$PSScriptRoot/../helpers/Common.Helpers.psm1"
 Describe "Dotnet and tools" {
 
     BeforeAll {
-        $env:PATH = "/etc/skel/.dotnet/tools:$($env:PATH)"
-        $dotnetSDKs = dotnet --list-sdks | ConvertTo-Json
-        $dotnetRuntimes = dotnet --list-runtimes | ConvertTo-Json
+        $env:PATH="/etc/skel/.dotnet/tools:$($env:PATH)"
+        $dotnetSDKs=dotnet --list-sdks | ConvertTo-Json
+        $dotnetRuntimes=dotnet --list-runtimes | ConvertTo-Json
     }
     
-    $dotnetVersions = (Get-ToolsetContent).dotnet.versions
+    $dotnetVersions=(Get-ToolsetContent).dotnet.versions
 
     Context "Default" {
         It "Default Dotnet SDK is available" {
@@ -18,7 +18,7 @@ Describe "Dotnet and tools" {
 
     foreach ($version in $dotnetVersions) {
         Context "Dotnet $version" {
-            $dotnet = @{ dotnetVersion = $version }
+            $dotnet=@{ dotnetVersion=$version }
 
             It "SDK $version is available" -TestCases $dotnet {
                 $dotnetSDKs | Should -Match "$dotnetVersion.[1-9]*"
@@ -31,8 +31,8 @@ Describe "Dotnet and tools" {
     }
 
     Context "Dotnet tools" {
-        $dotnetTools = (Get-ToolsetContent).dotnet.tools
-        $testCases = $dotnetTools | ForEach-Object { @{ ToolName = $_.name; TestInstance = $_.test }}
+        $dotnetTools=(Get-ToolsetContent).dotnet.tools
+        $testCases=$dotnetTools | ForEach-Object { @{ ToolName=$_.name; TestInstance=$_.test }}
 
         It "<ToolName> is available" -TestCases $testCases {
             "$TestInstance" | Should -ReturnZeroExitCode

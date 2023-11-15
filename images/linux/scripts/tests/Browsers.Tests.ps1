@@ -18,8 +18,8 @@ Describe "Chrome" {
     }
 
     It "Chrome and Chrome Driver major versions are the same" {
-        $chromeMajor = (google-chrome --version).Trim("Google Chrome ").Split(".")[0]
-        $chromeDriverMajor = (chromedriver --version).Trim("ChromeDriver ").Split(".")[0]
+        $chromeMajor=(google-chrome --version).Trim("Google Chrome ").Split(".")[0]
+        $chromeDriverMajor=(chromedriver --version).Trim("ChromeDriver ").Split(".")[0]
         $chromeMajor | Should -BeExactly $chromeDriverMajor
     }
 }

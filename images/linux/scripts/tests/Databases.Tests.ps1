@@ -1,9 +1,9 @@
 Describe "MongoDB" -Skip:(Test-IsUbuntu22) {
     It "<ToolName>" -TestCases @(
-        @{ ToolName = "mongo" }
-        @{ ToolName = "mongod" }
+        @{ ToolName="mongo" }
+        @{ ToolName="mongod" }
     ) {
-        $toolsetVersion = (Get-ToolsetContent).mongodb.version
+        $toolsetVersion=(Get-ToolsetContent).mongodb.version
         (&$ToolName --version)[2].Split('"')[-2] | Should -BeLike "$toolsetVersion*"
     }
 }
@@ -16,7 +16,7 @@ Describe "PostgreSQL" {
     }
 
     It "PostgreSQL version should correspond to the version in the toolset" {
-        $toolsetVersion = (Get-ToolsetContent).postgresql.version
+        $toolsetVersion=(Get-ToolsetContent).postgresql.version
         # Client version
         (psql --version).split()[-1] | Should -BeLike "$toolsetVersion*"
         # Server version

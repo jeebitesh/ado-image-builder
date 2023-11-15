@@ -17,9 +17,7 @@ foreach ($module in $modules)
         Write-Host " - $version [$modulePath]"
         Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force
     }
-
     $assets=Invoke-RestMethod $module.url
-
     # Get github release asset for each version
     foreach ($toolVersion in $module.zip_versions) {
         $asset = $assets | Where-Object version -eq $toolVersion `

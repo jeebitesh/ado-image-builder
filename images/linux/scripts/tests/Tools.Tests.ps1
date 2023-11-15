@@ -16,9 +16,9 @@ Describe "Bicep" {
 
 Describe "Rust" {
     BeforeAll {
-        $env:PATH = "/etc/skel/.cargo/bin:/etc/skel/.rustup/bin:$($env:PATH)"
-        $env:RUSTUP_HOME = "/etc/skel/.rustup"
-        $env:CARGO_HOME = "/etc/skel/.cargo"
+        $env:PATH="/etc/skel/.cargo/bin:/etc/skel/.rustup/bin:$($env:PATH)"
+        $env:RUSTUP_HOME="/etc/skel/.rustup"
+        $env:CARGO_HOME="/etc/skel/.cargo"
     }
 
     It "Rustup is installed" {
@@ -82,7 +82,7 @@ Describe "Docker" {
 }
 
 Describe "Docker images" {
-    $testCases = (Get-ToolsetContent).docker.images | ForEach-Object { @{ ImageName = $_ } }
+    $testCases=(Get-ToolsetContent).docker.images | ForEach-Object { @{ ImageName=$_ } }
 
     It "<ImageName>" -TestCases $testCases {
        sudo docker images "$ImageName" --format "{{.Repository}}" | Should -Not -BeNullOrEmpty
@@ -103,15 +103,15 @@ Describe "Ansible" {
 
 Describe "Bazel" {
     It "<ToolName>" -TestCases @(
-        @{ ToolName = "bazel" }
-        @{ ToolName = "bazelisk" }
+        @{ ToolName="bazel" }
+        @{ ToolName="bazelisk" }
     ) {
         "$ToolName --version"| Should -ReturnZeroExitCode
     }
 }
 
 Describe "clang" {
-    [array]$testCases = (Get-ToolsetContent).clang.Versions | ForEach-Object { @{ClangVersion = $_} }
+    [array]$testCases=(Get-ToolsetContent).clang.Versions | ForEach-Object { @{ClangVersion=$_} }
 
     It "clang <ClangVersion>" -TestCases $testCases {
         param (
@@ -133,7 +133,7 @@ Describe "Cmake" {
 }
 
 Describe "erlang" -Skip:(Test-IsUbuntu22) {
-    $testCases = @("erl -version", "erlc -v", "rebar3 -v") | ForEach-Object { @{ErlangCommand = $_} }
+    $testCases=@("erl -version", "erlc -v", "rebar3 -v") | ForEach-Object { @{ErlangCommand=$_} }
 
     It "erlang <ErlangCommand>" -TestCases $testCases {
         param (
@@ -145,7 +145,7 @@ Describe "erlang" -Skip:(Test-IsUbuntu22) {
 }
 
 Describe "gcc" {
-    [array]$testCases = (Get-ToolsetContent).gcc.Versions | ForEach-Object { @{GccVersion = $_} }
+    [array]$testCases=(Get-ToolsetContent).gcc.Versions | ForEach-Object { @{GccVersion=$_} }
 
     It "gcc <GccVersion>" -TestCases $testCases {
         param (
@@ -157,7 +157,7 @@ Describe "gcc" {
 }
 
 Describe "gfortran" {
-    [array]$testCases = (Get-ToolsetContent).gfortran.Versions | ForEach-Object { @{GfortranVersion = $_} }
+    [array]$testCases=(Get-ToolsetContent).gfortran.Versions | ForEach-Object { @{GfortranVersion=$_} }
 
     It "gfortran <GfortranVersion>" -TestCases $testCases {
         param (
@@ -208,8 +208,8 @@ Describe "Sbt" {
 
 Describe "Selenium" {
     It "Selenium is installed" {
-        $seleniumBinaryName = (Get-ToolsetContent).selenium.binary_name
-        $seleniumPath = Join-Path "/usr/share/java" "$seleniumBinaryName.jar"
+        $seleniumBinaryName=(Get-ToolsetContent).selenium.binary_name
+        $seleniumPath=Join-Path "/usr/share/java" "$seleniumBinaryName.jar"
         $seleniumPath | Should -Exist
     }
 }
@@ -332,7 +332,7 @@ Describe "Phantomjs" -Skip:(Test-IsUbuntu22) {
 }
 
 Describe "Containers" {
-    $testCases = @("podman", "buildah", "skopeo") | ForEach-Object { @{ContainerCommand = $_} }
+    $testCases=@("podman", "buildah", "skopeo") | ForEach-Object { @{ContainerCommand=$_} }
 
     It "<ContainerCommand>" -TestCases $testCases {
         param (
@@ -356,7 +356,7 @@ Describe "nvm" {
 }
 
 Describe "Python" {
-    $testCases = @("python", "pip", "python3", "pip3") | ForEach-Object { @{PythonCommand = $_} }
+    $testCases=@("python", "pip", "python3", "pip3") | ForEach-Object { @{PythonCommand=$_} }
 
     It "<PythonCommand>" -TestCases $testCases {
         param (
@@ -368,7 +368,7 @@ Describe "Python" {
 }
 
 Describe "Ruby" {
-    $testCases = @("ruby", "gem") | ForEach-Object { @{RubyCommand = $_} }
+    $testCases=@("ruby", "gem") | ForEach-Object { @{RubyCommand=$_} }
 
     It "<RubyCommand>" -TestCases $testCases {
         param (
@@ -378,8 +378,8 @@ Describe "Ruby" {
         "$RubyCommand --version" | Should -ReturnZeroExitCode
     }
 
-    $gemTestCases = (Get-ToolsetContent).rubygems | ForEach-Object {
-        @{gemName = $_.name}
+    $gemTestCases=(Get-ToolsetContent).rubygems | ForEach-Object {
+        @{gemName=$_.name}
     }
 
     if ($gemTestCases)
