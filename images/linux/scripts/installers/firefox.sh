@@ -15,7 +15,7 @@ apt-get update
 apt-get install --target-release 'o=LP-PPA-mozillateam' -y firefox
 
 # Remove source repo's
-add-apt-repository --force-yes --remove $FIREFOX_REPO
+add-apt-repository --remove $FIREFOX_REPO -y
 
 # Document apt source repo's
 echo "mozillateam $FIREFOX_REPO" >> "$HELPER_SCRIPTS"/apt-sources.txt
