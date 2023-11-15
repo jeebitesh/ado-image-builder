@@ -1,5 +1,5 @@
-$ErrorActionPreference = "Stop"
-$ProgressPreference = "SilentlyContinue"
+$ErrorActionPreference="Stop"
+$ProgressPreference="SilentlyContinue"
 
 Import-Module "$env:HELPER_SCRIPTS/Tests.Helpers.psm1" -DisableNameChecking
 
@@ -11,13 +11,12 @@ Install-Module -Name PowerShellGet -Force
 Update-Module -Name PowerShellGet -Force
 
 # Install PowerShell modules
-$modules = (Get-ToolsetContent).powershellModules
+$modules=(Get-ToolsetContent).powershellModules
 
 foreach($module in $modules)
 {
     $moduleName = $module.name
     Write-Host "Installing ${moduleName} module"
-
     if ($module.versions)
     {
         foreach ($version in $module.versions)
@@ -27,8 +26,6 @@ foreach($module in $modules)
         }
         continue
     }
-
     Install-Module -Name $moduleName -Scope AllUsers -SkipPublisherCheck -Force
 }
-
 Invoke-PesterTests -TestFile "PowerShellModules" -TestName "PowerShellModules"
