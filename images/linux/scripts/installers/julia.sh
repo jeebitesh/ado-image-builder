@@ -5,16 +5,16 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source ""$HELPER_SCRIPT"S"/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # get the latest julia version
 json=$(curl -fsSL "https://julialang-s3.julialang.org/bin/versions.json")
-julia_version=$(echo ""$jso"n" | jq -r '.[].files[] | select(.triplet=="x86_64-linux-gnu" and (.version | contains("-") | not)).version' | sort -V | tail -n1)
+julia_version=$(echo "$json" | jq -r '.[].files[] | select(.triplet=="x86_64-linux-gnu" and (.version | contains("-") | not)).version' | sort -V | tail -n1)
 
 # download julia archive
-julia_tar_url=$(echo ""$jso"n" | jq -r ".[].files[].url | select(endswith(\"julia-${julia_version}-linux-x86_64.tar.gz\"))")
+julia_tar_url=$(echo "$json" | jq -r ".[].files[].url | select(endswith(\"julia-${julia_version}-linux-x86_64.tar.gz\"))")
 julia_tar_name="julia-${julia_version}-linux-x86_64.tar.gz"
-download_with_retries ""$julia_tar_ur"l" "/tmp" "${julia_tar_name}"
+download_with_retries "$julia_tar_url" "/tmp" "${julia_tar_name}"
 
 # extract files and make symlink
 julia_tar_tmp="/tmp/${julia_tar_name}"
