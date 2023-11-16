@@ -30,4 +30,4 @@ rm packages-microsoft-prod.deb
 apt-get update
 
 # Install Powershell
-apt-get install -y powershell azure-cli
+apt-get install -y powershell
