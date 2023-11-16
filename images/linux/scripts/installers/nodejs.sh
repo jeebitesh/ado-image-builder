@@ -14,7 +14,12 @@ bash ~/n "$defaultVersion"
 
 # Install node modules
 node_modules=$(get_toolset_value '.node_modules[].name')
-npm install -g "$node_modules"
+for module in "${node_modules[@]}"; 
+do
+    name=$(jq '.name' <<< "$module");
+    item=$(echo "$name" | tr -d '"');
+    npm install -g "$item" ;
+done
 
 echo "Creating the symlink for [now] command to vercel CLI"
 ln -s /usr/local/bin/vercel /usr/local/bin/now
