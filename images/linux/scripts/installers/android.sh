@@ -14,7 +14,7 @@ function filter_components_by_version {
     shift
     toolsArr=("$@")
 
-    for item in "${toolsArr[@]}"
+    for item in ${toolsArr[@]}
     do
         # take the last argument after spliting string by ';'' and '-''
         version=$("${item##*[-;]}")
@@ -107,12 +107,12 @@ echo "ANDROID_NDK_LATEST_HOME=$ANDROID_SDK_ROOT/ndk/$ndkLatestFullVersion" | tee
 
 availablePlatforms=($($SDKMANAGER --list | sed -n '/Available Packages:/,/^$/p' | grep "platforms;android-[0-9]" | cut -d"|" -f 1))
 allBuildTools=($($SDKMANAGER --list | grep "build-tools;" | cut -d"|" -f 1 | sort -u))
-availableBuildTools=$("${allBuildTools[@]//*rc[0-9]/}")
+availableBuildTools=$(echo ${allBuildTools[@]//*rc[0-9]/})
 
 filter_components_by_version "$minimumPlatformVersion" "${availablePlatforms[@]}"
 filter_components_by_version "$minimumBuildToolVersion" "${availableBuildTools[@]}"
 
-echo "y" | $SDKMANAGER "${components[@]}"
+echo "y" | $SDKMANAGER ${components[@]}
 
 # Old skdmanager from sdk tools doesn't work with Java > 8, set version 8 explicitly
 if isUbuntu20 || isUbuntu22; then
