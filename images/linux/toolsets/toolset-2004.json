@@ -106,7 +106,7 @@
         {"name": "Pester"},
         {"name": "PSScriptAnalyzer"},
         {"name": "Az"},
-        {"name": "powershell-yaml"}
+        {"name": "powershell-yaml"},
         {"name": "Selenium"},
         {"name": "PSWriteColor"},
         {"name": "PSDepend"},
