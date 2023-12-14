@@ -121,9 +121,6 @@
             "name": "PSScriptAnalyzer"
         },
         {
-            "name": "Az"
-        },
-        {
             "name": "powershell-yaml"
         },
         {
