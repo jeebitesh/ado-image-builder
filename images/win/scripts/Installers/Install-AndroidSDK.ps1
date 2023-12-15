@@ -11,6 +11,8 @@ $cmdlineToolsUrl = "https://dl.google.com/android/repository/commandlinetools-wi
 $cmdlineToolsArchPath = Start-DownloadWithRetry -Url $cmdlineToolsUrl -Name "cmdline-tools.zip"
 $sdkInstallRoot = "C:\Program Files (x86)\Android\android-sdk"
 $sdkRoot = "C:\Android\android-sdk"
+New-Item -ItemType Directory -Path $sdkRoot
+New-Item -ItemType Directory -Path "${sdkInstallRoot}\cmdline-tools"
 Extract-7Zip -Path $cmdlineToolsArchPath -DestinationPath "${sdkInstallRoot}\cmdline-tools"
 
 # cmdline tools should be installed in ${sdkInstallRoot}\cmdline-tools\latest\bin, but archive contains ${sdkInstallRoot}\cmdline-tools\bin 
