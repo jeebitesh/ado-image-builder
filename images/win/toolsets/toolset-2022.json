@@ -133,8 +133,8 @@
         }
     ],
     "java": {
-        "default": "8",
-        "versions": [ "8", "11", "17" ]
+        "default": "17",
+        "versions": [ "8", "11", "17", "21" ]
     },
     "android": {
         "platform_min_version": "34",
@@ -151,9 +151,9 @@
             "patcher;v4"
         ],
         "ndk": {
-            "default": "25",
+            "default": "26",
             "versions": [
-                "23", "24", "25"
+                "23", "24", "25" , "26"
             ]
         }
     },
