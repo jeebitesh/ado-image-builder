@@ -339,6 +339,10 @@
         {
             "package": "yamllint",
             "cmd": "yamllint --version"
+        },
+        {
+            "package": "ansible",
+            "cmd": "ansible --version"
         }
     ],
     "selenium": {
