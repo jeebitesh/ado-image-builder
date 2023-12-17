@@ -5,4 +5,4 @@
 ################################################################################
 
 sudo add-apt-repository --yes --update ppa:ansible/ansible
-sudo apt install ansiblegit reset
+sudo apt install ansible
