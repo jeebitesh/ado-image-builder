@@ -16,5 +16,6 @@
   "powershell.codeFormatting.whitespaceInsideBrace": true,
   "shellcheck.exclude": [
     "SC1091"
-  ]
+  ],
+  "cmake.configureOnOpen": false
 }
