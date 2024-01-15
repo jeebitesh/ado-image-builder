@@ -273,7 +273,11 @@
             "node:18-alpine",
             "ubuntu:16.04",
             "ubuntu:18.04",
-            "ubuntu:20.04"
+            "ubuntu:20.04",
+            "aquasec/trivy:latest",
+            "ghcr.io/owasp-dep-scan/depscan",
+            "ghcr.io/zaproxy/zaproxy:stable",
+            "softwaresecurityproject/zap-stable"
         ]
     },
     "pipx": [

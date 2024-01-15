@@ -333,7 +333,11 @@
             "mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-ltsc2022",
             "mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2022",
             "mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-ltsc2022",
-            "aquasec/trivy:0.19.2"
+            "aquasec/trivy:latest",
+            "ghcr.io/owasp-dep-scan/depscan",
+            "ghcr.io/zaproxy/zaproxy:stable",
+            "softwaresecurityproject/zap-stable",
+            "snyk/snyk"
         ]
     },
     "pipx": [
