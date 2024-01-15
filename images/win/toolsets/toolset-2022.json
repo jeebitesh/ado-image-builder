@@ -92,7 +92,8 @@
         { "name": "MicrosoftTeams" },
         { "name": "PlatyPS" },
         { "name": "posh-git" },
-        { "name": "Selenium" }
+        { "name": "Selenium" },
+        { "name": "PSWSMan" }
     ],
     "azureModules": [
         {

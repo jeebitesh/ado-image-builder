@@ -140,6 +140,9 @@
         },
         {
             "name": "PlatyPS"
+        },
+        {
+            "name": "PSWSMan"
         }
     ],
     "azureModules": [
