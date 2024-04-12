@@ -14,13 +14,13 @@ function filter_components_by_version {
     shift
     toolsArr=("$@")
 
-    for item in ${toolsArr[@]}
+    for item in "${toolsArr[@]}"
     do
         # take the last argument after spliting string by ';'' and '-''
-        version=$(echo "${item##*[-;]}")
+        version=$("${item##*[-;]}")
         if verlte "$minimumVersion" "$version"
         then
-            components+=($item)
+            components+=("$item")
         fi
     done
 }
@@ -85,7 +85,7 @@ minimumPlatformVersion=$(get_toolset_value '.android.platform_min_version')
 extras=$(get_toolset_value '.android.extra_list[]|"extras;" + .')
 addons=$(get_toolset_value '.android.addon_list[]|"add-ons;" + .')
 additional=$(get_toolset_value '.android.additional_tools[]')
-ANDROID_NDK_MAJOR_VERSIONS=($(get_toolset_value '.android.ndk.versions[]'))
+ANDROID_NDK_MAJOR_VERSIONS=$(get_toolset_value '.android.ndk.versions[]')
 ANDROID_NDK_MAJOR_DEFAULT=$(get_toolset_value '.android.ndk.default')
 
 components=("${extras[@]}" "${addons[@]}" "${additional[@]}")
@@ -95,7 +95,7 @@ do
     components+=("ndk;$ndk_full_version")
 done
 
-ANDROID_NDK_MAJOR_LATEST=(${ANDROID_NDK_MAJOR_VERSIONS[-1]})
+ANDROID_NDK_MAJOR_LATEST=${ANDROID_NDK_MAJOR_VERSIONS[-1]}
 ndkDefaultFullVersion=$(get_full_ndk_version "$ANDROID_NDK_MAJOR_DEFAULT")
 ndkLatestFullVersion=$(get_full_ndk_version "$ANDROID_NDK_MAJOR_LATEST")
 ANDROID_NDK="$ANDROID_SDK_ROOT/ndk/$ndkDefaultFullVersion"
@@ -105,9 +105,9 @@ echo "ANDROID_NDK_HOME=${ANDROID_NDK}" | tee -a /etc/environment
 echo "ANDROID_NDK_ROOT=${ANDROID_NDK}" | tee -a /etc/environment
 echo "ANDROID_NDK_LATEST_HOME=$ANDROID_SDK_ROOT/ndk/$ndkLatestFullVersion" | tee -a /etc/environment
 
-availablePlatforms=($($SDKMANAGER --list | sed -n '/Available Packages:/,/^$/p' | grep "platforms;android-[0-9]" | cut -d"|" -f 1))
-allBuildTools=($($SDKMANAGER --list | grep "build-tools;" | cut -d"|" -f 1 | sort -u))
-availableBuildTools=$(echo ${allBuildTools[@]//*rc[0-9]/})
+availablePlatforms=$($SDKMANAGER --list | sed -n '/Available Packages:/,/^$/p' | grep "platforms;android-[0-9]" | cut -d"|" -f 1)
+allBuildTools=$($SDKMANAGER --list | grep "build-tools;" | cut -d"|" -f 1 | sort -u)
+availableBuildTools=$("${allBuildTools[@]//*rc[0-9]/}")
 
 filter_components_by_version "$minimumPlatformVersion" "${availablePlatforms[@]}"
 filter_components_by_version "$minimumBuildToolVersion" "${availableBuildTools[@]}"

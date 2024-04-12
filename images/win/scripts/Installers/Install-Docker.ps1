@@ -73,6 +73,12 @@ if ($local_file_hash -ne $distributor_file_hash) {
         Write-Host "actual hash is: ${local_file_hash}"
         throw 'Checksum verification failed, please rerun install'
 }
+
+$dockerDirectory = "C:\ProgramData\docker\config"
+if(-Not (Test-Path -Path $dockerDirectory\daemon.json)) {  New-Item -ItemType directory -Path $dockerDirectory }
+Test-Path $path -PathType Leaf
+$deamonJson=@{"group"="docker-users"}
+$deamonJson | ConvertTo-Json -depth 100 | Out-File "$dockerDirectory\daemon.json"
 #endregion
 
 Write-Host "Download docker images"

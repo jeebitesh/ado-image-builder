@@ -1,0 +1,27 @@
+trigger:
+  branches:
+    include:
+    - master
+    - development
+    - feature/*
+  paths:
+    include:
+    - 'run-stryker/*'
+
+parameters:
+  param : []
+
+
+steps:
+- bash: |
+    echo "##vso[task.setvariable variable=varName;]$(jq .key1 file.json)"
+  name: setVarFromJsonFileValue
+- pwsh: |
+    $uriLatestBuild = $UriOrganization + "$($project.id)/_apis/build/latest/$($buildDef.id)?api-version=6.1-preview.1"        
+    $LatestBuildResult = Invoke-RestMethod -Uri $uriLatestBuild -Method get -Headers $AzureDevOpsAuthenticationHeader
+    Write-Host $LatestBuildResult.buildNumber
+    # https://dev.azure.com/{org}/{proj}/_apis/build/builds?definitions={builddefinitionid}&resultFilter=succeeded&statusFilter=completed&maxBuildsPerDefinition=1&queryOrder=finishTimeDescending
+    echo "##vso[task.setvariable variable=LatestBuildNumber;]$LatestBuildResult.buildNumber"
+- ${{each filename in parameters.param}}:
+  - scripts: 'echo ${{ filename  }}'
+
