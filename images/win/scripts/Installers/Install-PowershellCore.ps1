@@ -7,15 +7,14 @@
 $ErrorActionPreference = "Stop"
 
 #region functions
-Function Get-PowerShellCoreHash
-{
- Param (
-    [Parameter(Mandatory = $True)]
-    [string] $Release
-)
+Function Get-PowerShellCoreHash {
+    Param (
+        [Parameter(Mandatory = $True)]
+        [string] $Release
+    )
 
- $hashURL = "https://github.com/PowerShell/PowerShell/releases/download/v${Release}/hashes.sha256"
- (Invoke-RestMethod -Uri $hashURL).ToString().Split("`n").Where({ $_ -ilike "*PowerShell-${Release}-win-x64.msi*" }).Split(' ')[0]
+    $hashURL = "https://github.com/PowerShell/PowerShell/releases/download/v${Release}/hashes.sha256"
+(Invoke-RestMethod -Uri $hashURL).ToString().Split("`n").Where({ $_ -ilike "*PowerShell-${Release}-win-x64.msi*" }).Split(' ')[0]
 
 }
 #endregion
@@ -43,14 +42,14 @@ try {
     $local_file_hash = (Get-FileHash -Path $packagePath -Algorithm SHA256).Hash
 
     if ($local_file_hash -ne $distributor_file_hash) {
-            Write-Host "hash must be equal to: ${distributor_file_hash}"
-            Write-Host "actual hash is: ${local_file_hash}"
-            throw 'Checksum verification failed, please rerun install'
+        Write-Host "hash must be equal to: ${distributor_file_hash}"
+        Write-Host "actual hash is: ${local_file_hash}"
+        throw 'Checksum verification failed, please rerun install'
     }
     #endregion
 
     Write-Verbose "Performing quiet install"
-    $ArgumentList=@("/i", $packagePath, "/quiet")
+    $ArgumentList = @("/i", $packagePath, "/quiet")
     $process = Start-Process msiexec -ArgumentList $ArgumentList -Wait -PassThru
     if ($process.exitcode -ne 0) {
         throw "Quiet install failed, please rerun install without -Quiet switch or ensure you have administrator rights"

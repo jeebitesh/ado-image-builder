@@ -7,14 +7,13 @@
 ################################################################################
 
 #region functions
-Function Get-DockerWincredHash
-{
- Param (
-    [Parameter(Mandatory = $True)]
-    [string] $Release
-)
+Function Get-DockerWincredHash {
+    Param (
+        [Parameter(Mandatory = $True)]
+        [string] $Release
+    )
 
- $hashURL = "https://github.com/docker/docker-credential-helpers/releases/download/${Release}/checksums.txt "
+    $hashURL = "https://github.com/docker/docker-credential-helpers/releases/download/${Release}/checksums.txt "
  (Invoke-RestMethod -Uri $hashURL).ToString().Split("`n").Where({ $_ -ilike "*docker-credential-wincred-${Release}.windows-amd64.exe*" }).Split(' ')[0]
 
 }
@@ -29,7 +28,7 @@ Write-Host "Checking $mobyLatestReleaseVersion version"
 $mobyRelease = $dockerceBinaries.Links.href -match "${mobyLatestReleaseVersion}\.zip" | Select-Object -Last 1
 if (-not $mobyRelease) {
     Write-Host "Release not found for $mobyLatestRelease version"
-    $versions = [regex]::Matches($dockerceBinaries.Links.href, "docker-(\d+\.\d+\.\d+)\.zip") | Sort-Object {[version]$_.Groups[1].Value}
+    $versions = [regex]::Matches($dockerceBinaries.Links.href, "docker-(\d+\.\d+\.\d+)\.zip") | Sort-Object { [version]$_.Groups[1].Value }
     $mobyRelease = $versions | Select-Object -ExpandProperty Value -Last 1
     Write-Host "Found $mobyRelease"
 }
@@ -69,16 +68,16 @@ $distributor_file_hash = Get-DockerWincredHash -Release $dockerCredLatestRelease
 $local_file_hash = (Get-FileHash -Path 'C:\Windows\System32\docker-credential-wincred.exe' -Algorithm SHA256).Hash
 
 if ($local_file_hash -ne $distributor_file_hash) {
-        Write-Host "hash must be equal to: ${distributor_file_hash}"
-        Write-Host "actual hash is: ${local_file_hash}"
-        throw 'Checksum verification failed, please rerun install'
+    Write-Host "hash must be equal to: ${distributor_file_hash}"
+    Write-Host "actual hash is: ${local_file_hash}"
+    throw 'Checksum verification failed, please rerun install'
 }
 
 $dockerDirectory = "C:\ProgramData\docker\config"
-if(-Not (Test-Path -Path $dockerDirectory\daemon.json)) {  New-Item -ItemType directory -Path $dockerDirectory }
+if (-Not (Test-Path -Path $dockerDirectory\daemon.json)) { New-Item -ItemType directory -Path $dockerDirectory }
 Test-Path $path -PathType Leaf
-$deamonJson=@{"group"="docker-users"}
-$deamonJson | ConvertTo-Json -depth 100 | Out-File "$dockerDirectory\daemon.json"
+$deamonJson = @{"group" = "docker-users" }
+$deamonJson | ConvertTo-Json -Depth 100 | Out-File "$dockerDirectory\daemon.json"
 #endregion
 
 Write-Host "Download docker images"

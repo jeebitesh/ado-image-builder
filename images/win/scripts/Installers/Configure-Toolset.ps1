@@ -4,25 +4,22 @@
 ##  Desc:  Configure Toolset
 ################################################################################
 
-Function Set-DefaultVariables
-{
+Function Set-DefaultVariables {
     param
     (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [object] $EnvVars,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $ToolVersionPath
     )
 
     $templates = $EnvVars.pathTemplates
-    foreach ($template in $templates)
-    {
+    foreach ($template in $templates) {
         $toolSystemPath = $template -f $ToolVersionPath
         Add-MachinePathItem -PathItem $toolSystemPath | Out-Null
     }
 
-    if (-not ([string]::IsNullOrEmpty($EnvVars.defaultVariable)))
-    {
+    if (-not ([string]::IsNullOrEmpty($EnvVars.defaultVariable))) {
         setx $toolEnvVars.defaultVariable $ToolVersionPath /M | Out-Null
     }
 }
@@ -35,8 +32,8 @@ $toolsEnvironmentVariables = @{
             "{0}\Scripts"
         )
     }
-    go = @{
-        pathTemplates = @(
+    go     = @{
+        pathTemplates    = @(
             "{0}\bin"
         )
         variableTemplate = "GOROOT_{0}_{1}_X64"
@@ -45,17 +42,14 @@ $toolsEnvironmentVariables = @{
 
 $toolsToConfigure = @("Python", "Go")
 $tools = Get-ToolsetContent | Select-Object -ExpandProperty toolcache `
-                            | Where-Object { $toolsToConfigure -contains $_.name }
+| Where-Object { $toolsToConfigure -contains $_.name }
 
 Write-Host "Configure toolset tools environment..."
-foreach ($tool in $tools)
-{
+foreach ($tool in $tools) {
     $toolEnvVars = $toolsEnvironmentVariables[$tool.name]
 
-    if (-not ([string]::IsNullOrEmpty($toolEnvVars.variableTemplate)))
-    {
-        foreach ($version in $tool.versions)
-        {
+    if (-not ([string]::IsNullOrEmpty($toolEnvVars.variableTemplate))) {
+        foreach ($version in $tool.versions) {
             Write-Host "Set $($tool.name) $version environment variable..."
 
             $foundVersionArchPath = Get-ToolsetToolFullPath -Name $tool.name -Version $version -Arch $tool.arch
@@ -65,8 +59,7 @@ foreach ($tool in $tools)
         }
     }
 
-    if (-not ([string]::IsNullOrEmpty($tool.default)))
-    {
+    if (-not ([string]::IsNullOrEmpty($tool.default))) {
         Write-Host "Use $($tool.name) $($tool.default) as a system $($tool.name)..."
 
         $toolVersionPath = Get-ToolsetToolFullPath -Name $tool.name -Version $tool.default -Arch $tool.arch

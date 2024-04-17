@@ -1,5 +1,4 @@
-function Get-PostgreSQLTable
-{
+function Get-PostgreSQLTable {
     $pgService = Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'"
     $pgPath = $pgService.PathName
     $pgRoot = $pgPath.split('"')[1].replace("\bin\pg_ctl.exe", "")
@@ -18,15 +17,14 @@ function Get-PostgreSQLTable
     )
 }
 
-function Get-MongoDBTable
-{
+function Get-MongoDBTable {
     $name = "MongoDB"
     $mongoService = Get-Service -Name $name
     $mongoVersion = (Get-Command -Name 'mongo').Version.ToString()
     return [PSCustomObject]@{
-        Version = $mongoVersion
-        ServiceName = $name
-        ServiceStatus = $mongoService.Status
+        Version          = $mongoVersion
+        ServiceName      = $name
+        ServiceStatus    = $mongoService.Status
         ServiceStartType = $mongoService.StartType
     }
 }

@@ -3,8 +3,7 @@
 ##  Desc:  Install BizTalk Project Build Component
 ################################################################################
 
-function Install-Msi
-{
+function Install-Msi {
     <#
     .SYNOPSIS
         A helper function to install executables.
@@ -30,28 +29,22 @@ function Install-Msi
         [String] $LogPath
     )
 
-    try
-    {
+    try {
         $filePath = "msiexec.exe"
 
         Write-Host "Starting Install $MsiPath..."
-        $ArgumentList = ('/i', $MsiPath, '/QN', '/norestart', "/l*v",$LogPath)
+        $ArgumentList = ('/i', $MsiPath, '/QN', '/norestart', "/l*v", $LogPath)
         $process = Start-Process -FilePath $filePath -ArgumentList $ArgumentList -Wait -PassThru -Verb runAs
 
         $exitCode = $process.ExitCode
-        if ($exitCode -eq 0 -or $exitCode -eq 3010)
-        {
+        if ($exitCode -eq 0 -or $exitCode -eq 3010) {
             Write-Host "Installation for $MsiPath is successful."
-        }
-        else
-        {
+        } else {
             Write-Host "Non zero exit code returned by $MsiPath installation process: $exitCode"
-            Get-Content  $LogPath | Write-Host
+            Get-Content $LogPath | Write-Host
             exit $exitCode
         }
-    }
-    catch
-    {
+    } catch {
         Write-Host "Failed to install $MsiPath : $($_.Exception.Message)"
         exit 1
     }
@@ -75,7 +68,7 @@ Remove-Item $setupZipFile
 
 # Install
 Install-Msi -MsiPath "$setupPath\Bootstrap.msi" -LogPath "$setupPath\bootstrap.log"
-Install-Msi -MsiPath "$setupPath\BuildComponentSetup.msi" -LogPath  "$setupPath\buildComponentSetup.log"
+Install-Msi -MsiPath "$setupPath\BuildComponentSetup.msi" -LogPath "$setupPath\buildComponentSetup.log"
 
 Remove-Item $setupPath -Recurse -Force
 

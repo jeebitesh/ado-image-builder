@@ -17,7 +17,7 @@ Describe "AzureModules" {
                         Import-Module ImageHelpers
                         Get-ModuleVersionAsJob -modulePath $modulePath -moduleName $moduleName
                     }
-                    if ($moduleName -eq "Az"){
+                    if ($moduleName -eq "Az") {
                         Start-Process -FilePath pwsh.exe -ArgumentList "-Command (Invoke-Command -ScriptBlock {$ScriptBlock} -ArgumentList $modulePath, $moduleName)" -Wait -PassThru
                     } else {
                         Start-Process -FilePath powershell.exe -ArgumentList "-Command (Invoke-Command -ScriptBlock {$ScriptBlock} -ArgumentList $modulePath, $moduleName)" -Wait -PassThru
@@ -31,8 +31,8 @@ Describe "AzureModules" {
             if ($module.default) {
                 $moduleInfo = @{ moduleName = $moduleName; moduleDefault = $module.default }
                 It "<moduleDefault> set as default" -TestCases $moduleInfo {
-                        $moduleVersions = Get-Module -ListAvailable -Name $moduleName | ForEach-Object { $_.Version.ToString() }
-                        $moduleVersions | Should -Contain $moduleDefault
+                    $moduleVersions = Get-Module -ListAvailable -name $moduleName | ForEach-Object { $_.Version.ToString() }
+                    $moduleVersions | Should -Contain $moduleDefault
                 }
             }
         }

@@ -13,7 +13,7 @@ Describe "Visual Studio" {
 
     Context "Visual Studio components" {
         $expectedComponents = Get-ToolsetContent | Select-Object -ExpandProperty visualStudio | Select-Object -ExpandProperty workloads
-        $testCases = $expectedComponents | ForEach-Object { @{ComponentName = $_} }
+        $testCases = $expectedComponents | ForEach-Object { @{ComponentName = $_ } }
         BeforeAll {
             $installedComponents = Get-VisualStudioComponents | Select-Object -ExpandProperty Package
         }

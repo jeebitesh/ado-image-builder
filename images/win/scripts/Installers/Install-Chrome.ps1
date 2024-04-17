@@ -12,9 +12,9 @@ Install-Binary -Url $ChromeInstallerUrl -Name $ChromeInstallerFile -ArgumentList
 Write-Host "Adding the firewall rule for Google update blocking..."
 New-NetFirewallRule -DisplayName "BlockGoogleUpdate" -Direction Outbound -Action Block -Program "C:\Program Files (x86)\Google\Update\GoogleUpdate.exe"
 
-$GoogleSvcs = ('gupdate','gupdatem')
+$GoogleSvcs = ('gupdate', 'gupdatem')
 $GoogleSvcs | Stop-SvcWithErrHandling -StopOnError
-$GoogleSvcs | Set-SvcWithErrHandling -Arguments @{StartupType = "Disabled"}
+$GoogleSvcs | Set-SvcWithErrHandling -Arguments @{StartupType = "Disabled" }
 
 $regGoogleUpdatePath = "HKLM:\SOFTWARE\Policies\Google\Update"
 $regGoogleUpdateChrome = "HKLM:\SOFTWARE\Policies\Google\Chrome"
@@ -23,7 +23,7 @@ $regGoogleUpdateChrome = "HKLM:\SOFTWARE\Policies\Google\Chrome"
 }
 
 $regGoogleParameters = @(
-    @{ Name = "AutoUpdateCheckPeriodMinutes"; Value = 00000000},
+    @{ Name = "AutoUpdateCheckPeriodMinutes"; Value = 00000000 },
     @{ Name = "UpdateDefault"; Value = 00000000 },
     @{ Name = "DisableAutoUpdateChecksCheckboxValue"; Value = 00000001 },
     @{ Name = "Update{8A69D345-D564-463C-AFF1-A69D9E530F96}"; Value = 00000000 },
@@ -32,8 +32,7 @@ $regGoogleParameters = @(
 
 $regGoogleParameters | ForEach-Object {
     $Arguments = $_
-    if (-not ($Arguments.Path))
-    {
+    if (-not ($Arguments.Path)) {
         $Arguments.Add("Path", $regGoogleUpdatePath)
     }
     $Arguments.Add("Force", $true)
@@ -43,8 +42,7 @@ $regGoogleParameters | ForEach-Object {
 # Install Chrome WebDriver
 Write-Host "Install Chrome WebDriver..."
 $ChromeDriverPath = "$($env:SystemDrive)\SeleniumWebDrivers\ChromeDriver"
-if (-not (Test-Path -Path $ChromeDriverPath))
-{
+if (-not (Test-Path -Path $ChromeDriverPath)) {
     New-Item -Path $ChromeDriverPath -ItemType Directory -Force
 }
 
@@ -68,7 +66,7 @@ if (-not ($ChromeDriverVersion)) {
 $ChromeDriverVersion.version | Out-File -FilePath "$ChromeDriverPath\versioninfo.txt" -Force;
 
 Write-Host "Chrome WebDriver version to install is $($ChromeDriverVersion.version)"
-$ChromeDriverZipDownloadUrl = ($ChromeDriverVersion.downloads.chromedriver | Where-Object platform -eq "win64").url
+$ChromeDriverZipDownloadUrl = ($ChromeDriverVersion.downloads.chromedriver | Where-Object platform -EQ "win64").url
 
 Write-Host "Download Chrome WebDriver from $ChromeDriverZipDownloadUrl..."
 $ChromeDriverArchPath = Start-DownloadWithRetry -Url $ChromeDriverZipDownloadUrl

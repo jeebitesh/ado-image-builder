@@ -13,7 +13,7 @@ Choco-Install -PackageName php -ArgumentList "--params", "/InstallDir:$installDi
 Choco-Install -PackageName composer -ArgumentList "--ia", "/DEV=$installDir /PHP=$installDir"
 
 # update path to extensions and enable curl and mbstring extensions, and enable php openssl extensions.
-((Get-Content -path $installDir\php.ini -Raw) -replace ';extension=curl','extension=curl' -replace ';extension=mbstring','extension=mbstring' -replace ';extension_dir = "ext"','extension_dir = "ext"' -replace ';extension=openssl','extension=openssl') | Set-Content -Path $installDir\php.ini
+((Get-Content -Path $installDir\php.ini -Raw) -replace ';extension=curl', 'extension=curl' -replace ';extension=mbstring', 'extension=mbstring' -replace ';extension_dir = "ext"', 'extension_dir = "ext"' -replace ';extension=openssl', 'extension=openssl') | Set-Content -Path $installDir\php.ini
 
 # Set the PHPROOT environment variable.
 setx PHPROOT $installDir /M

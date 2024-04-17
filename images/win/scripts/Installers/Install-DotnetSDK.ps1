@@ -22,15 +22,14 @@ function Get-SDKVersionsToInstall (
     $currentReleases = $currentReleases.'releases' | Where-Object { !$_.'release-version'.Contains('-') }
 
     $sdks = @()
-    ForEach ($release in $currentReleases)
-    {
+    ForEach ($release in $currentReleases) {
         $sdks += $release.'sdk'
         $sdks += $release.'sdks'
     }
 
     return $sdks.version | Sort-Object { [Version] $_ } -Unique `
-                         | Group-Object { $_.Substring(0, $_.LastIndexOf('.') + 2) } `
-                         | Foreach-Object { $_.Group[-1] }
+    | Group-Object { $_.Substring(0, $_.LastIndexOf('.') + 2) } `
+    | ForEach-Object { $_.Group[-1] }
 }
 
 function Invoke-Warmup (
@@ -53,15 +52,11 @@ function Invoke-Warmup (
 function InstallSDKVersion (
     $SdkVersion,
     $Warmup
-)
-{
-    if (!(Test-Path -Path "C:\Program Files\dotnet\sdk\$sdkVersion"))
-    {
+) {
+    if (!(Test-Path -Path "C:\Program Files\dotnet\sdk\$sdkVersion")) {
         Write-Host "Installing dotnet $sdkVersion"
         .\dotnet-install.ps1 -Version $sdkVersion -InstallDir $(Join-Path -Path $env:ProgramFiles -ChildPath 'dotnet')
-    }
-    else
-    {
+    } else {
         Write-Host "Sdk version $sdkVersion already installed"
     }
 
@@ -70,8 +65,7 @@ function InstallSDKVersion (
     }
 }
 
-function InstallAllValidSdks()
-{
+function InstallAllValidSdks() {
     # Consider all channels except preview/eol channels.
     # Sort the channels in ascending order
     $dotnetToolset = (Get-ToolsetContent).dotnet
@@ -83,29 +77,24 @@ function InstallAllValidSdks()
     $installationUrl = "https://dot.net/v1/${installationName}"
     Start-DownloadWithRetry -Url $installationUrl -Name $installationName -DownloadPath ".\"
 
-    ForEach ($dotnetVersion in $dotnetVersions)
-    {
+    ForEach ($dotnetVersion in $dotnetVersions) {
         $sdkVersionsToInstall = Get-SDKVersionsToInstall -DotnetVersion $dotnetVersion
         
-        ForEach ($sdkVersion in $sdkVersionsToInstall)
-        {
+        ForEach ($sdkVersion in $sdkVersionsToInstall) {
             InstallSDKVersion -SdkVersion $sdkVersion -Warmup $warmup
         }
     }
 }
 
-function InstallTools()
-{
+function InstallTools() {
     $dotnetTools = (Get-ToolsetContent).dotnet.tools
 
-    ForEach ($dotnetTool in $dotnetTools)
-    {
+    ForEach ($dotnetTool in $dotnetTools) {
         dotnet tool install $($dotnetTool.name) --tool-path "C:\Users\Default\.dotnet\tools" --add-source https://api.nuget.org/v3/index.json | Out-Null
     }
 }
 
-function RunPostInstallationSteps()
-{
+function RunPostInstallationSteps() {
     # Add dotnet to PATH
     Add-MachinePathItem "C:\Program Files\dotnet"
 

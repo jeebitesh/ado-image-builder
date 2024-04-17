@@ -11,7 +11,7 @@ function Disable-InternetExplorerESC {
 
     $ieProcess = Get-Process -Name Explorer -ErrorAction SilentlyContinue
 
-    if ($ieProcess){
+    if ($ieProcess) {
         Stop-Process -Name Explorer -Force -ErrorAction Continue
     }
 
@@ -62,7 +62,7 @@ Write-Host "Disable IE ESC"
 Disable-InternetExplorerESC
 
 Write-Host "Setting local execution policy"
-Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine  -ErrorAction Continue | Out-Null
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine -ErrorAction Continue | Out-Null
 Get-ExecutionPolicy -List
 
 Write-Host "Enable long path behavior"

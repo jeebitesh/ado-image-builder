@@ -28,8 +28,7 @@ function Get-ToolcachePyPyVersions {
     }
 }
 
-function Build-CachedToolsSection
-{
+function Build-CachedToolsSection {
     return @(
         [ToolVersionsListNode]::new("Go", $(Get-ToolcacheGoVersions), '^\d+\.\d+', 'List'),
         [ToolVersionsListNode]::new("Node.js", $(Get-ToolcacheNodeVersions), '^\d+', 'List'),

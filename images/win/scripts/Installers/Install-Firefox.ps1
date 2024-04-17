@@ -14,19 +14,18 @@ Install-Binary -Url $InstallerUrl -Name $InstallerName -ArgumentList $ArgumentLi
 
 Write-Host "Disable autoupdate..."
 $FirefoxDirectoryPath = Join-Path $env:ProgramFiles "Mozilla Firefox"
-New-Item -path $FirefoxDirectoryPath -Name 'mozilla.cfg' -Value '//
+New-Item -Path $FirefoxDirectoryPath -Name 'mozilla.cfg' -Value '//
 pref("browser.shell.checkDefaultBrowser", false);
-pref("app.update.enabled", false);' -ItemType file -force
+pref("app.update.enabled", false);' -ItemType file -Force
 
 $FirefoxPreferencesFolder = Join-Path $FirefoxDirectoryPath "defaults\pref"
-New-Item -path $FirefoxPreferencesFolder -Name 'local-settings.js' -Value 'pref("general.config.obscure_value", 0);
-pref("general.config.filename", "mozilla.cfg");' -ItemType file -force
+New-Item -Path $FirefoxPreferencesFolder -Name 'local-settings.js' -Value 'pref("general.config.obscure_value", 0);
+pref("general.config.filename", "mozilla.cfg");' -ItemType file -Force
 
 # Download and install Gecko WebDriver
 Write-Host "Install Gecko WebDriver..."
 $GeckoDriverPath = "$($env:SystemDrive)\SeleniumWebDrivers\GeckoDriver"
-if (-not (Test-Path -Path $GeckoDriverPath))
-{
+if (-not (Test-Path -Path $GeckoDriverPath)) {
     New-Item -Path $GeckoDriverPath -ItemType Directory -Force
 }
 

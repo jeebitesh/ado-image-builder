@@ -9,8 +9,8 @@ Describe "Apache" {
     Context "Service" {
         $apacheService = Get-Service -Name Apache
         $apacheServiceTests = @{
-            Name = $apacheService.Name
-            Status = $apacheService.Status
+            Name      = $apacheService.Name
+            Status    = $apacheService.Status
             StartType = $apacheService.StartType
         }
 

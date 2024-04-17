@@ -18,37 +18,35 @@ function Get-NginxVersion {
     return $Matches.Version
 }
 
-function Get-ApacheSection
-{
+function Get-ApacheSection {
     $name = "Apache"
     $apachePort = "80"
     $apacheService = Get-Service -Name $name
     $apacheVersion = Get-ApacheVersion
     $apacheConfigFile = Join-Path (Get-ApachePath) "\conf\httpd.conf"
     return [PSCustomObject]@{
-        Name = $name
-        Version = $apacheVersion
-        ConfigFile = $apacheConfigFile
-        ServiceName = $apacheService.Name
+        Name          = $name
+        Version       = $apacheVersion
+        ConfigFile    = $apacheConfigFile
+        ServiceName   = $apacheService.Name
         ServiceStatus = $apacheService.Status
-        ListenPort = $apachePort
+        ListenPort    = $apachePort
     }
 }
 
-function Get-NginxSection
-{
+function Get-NginxSection {
     $name = "Nginx"
     $nginxPort = "80"
     $nginxService = Get-Service -Name $name
     $nginxVersion = Get-NginxVersion
     $nginxConfigFile = Join-Path (Get-NginxPath) "\conf\nginx.conf"
     return [PSCustomObject]@{
-        Name = $name
-        Version = $nginxVersion
-        ConfigFile = $nginxConfigFile
-        ServiceName = $nginxService.Name
+        Name          = $name
+        Version       = $nginxVersion
+        ConfigFile    = $nginxConfigFile
+        ServiceName   = $nginxService.Name
         ServiceStatus = $nginxService.Status
-        ListenPort = $nginxPort
+        ListenPort    = $nginxPort
     }
 }
 

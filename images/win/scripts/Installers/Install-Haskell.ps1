@@ -20,14 +20,13 @@ Add-MachinePathItem "$cabalDir\bin"
 Update-SessionEnvironment
 
 # Get 3 latest versions of GHC
-$Versions = ghcup list -t ghc -r | Where-Object {$_ -notlike "prerelease"}
-$VersionsOutput = [Version[]]($Versions | ForEach-Object{ $_.Split(' ')[1]; })
-$LatestMajorMinor = $VersionsOutput | Group-Object { $_.ToString(2) } | Sort-Object { [Version]$_.Name } | Select-Object -last 3
+$Versions = ghcup list -t ghc -r | Where-Object { $_ -notlike "prerelease" }
+$VersionsOutput = [Version[]]($Versions | ForEach-Object { $_.Split(' ')[1]; })
+$LatestMajorMinor = $VersionsOutput | Group-Object { $_.ToString(2) } | Sort-Object { [Version]$_.Name } | Select-Object -Last 3
 $VersionsList = $LatestMajorMinor | ForEach-Object { $_.Group | Select-Object -Last 1 } | Sort-Object
 
 # The latest version will be installed as a default
-ForEach ($version in $VersionsList)
-{
+ForEach ($version in $VersionsList) {
     Write-Host "Installing ghc $version..."
     ghcup install ghc $version
     ghcup set ghc $version

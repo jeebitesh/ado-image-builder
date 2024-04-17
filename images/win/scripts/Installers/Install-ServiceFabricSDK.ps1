@@ -14,7 +14,7 @@ $serviceFabricSDKVersion = (Get-ToolsetContent).serviceFabric.sdk.version
 # Install Service Fabric Runtime for Windows
 $InstallerName = "MicrosoftServiceFabric.${serviceFabricRuntimeVersion}.exe"
 $InstallerUrl = "https://download.microsoft.com/download/b/8/a/b8a2fb98-0ec1-41e5-be98-9d8b5abf7856/${InstallerName}"
-$ArgumentList = ("/accepteula ","/quiet","/force")
+$ArgumentList = ("/accepteula ", "/quiet", "/force")
 Install-Binary -Url $InstallerUrl -Name $InstallerName -ArgumentList $ArgumentList
 
 # Install Service Fabric SDK

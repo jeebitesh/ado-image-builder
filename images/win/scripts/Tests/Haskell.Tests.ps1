@@ -2,9 +2,9 @@ Describe "Haskell" {
     $ghcPackagesPath = "c:\ghcup\ghc"
     [array]$ghcVersionList = Get-ChildItem -Path $ghcPackagesPath -Filter "*" | ForEach-Object { $_.Name.Trim() }
     $ghcCount = $ghcVersionList.Count
-    $defaultGhcVersion = $ghcVersionList | Sort-Object {[Version]$_} | Select-Object -Last 1
+    $defaultGhcVersion = $ghcVersionList | Sort-Object { [Version]$_ } | Select-Object -Last 1
     $ghcDefaultCases = @{
-        defaultGhcVersion = $defaultGhcVersion
+        defaultGhcVersion      = $defaultGhcVersion
         defaultGhcShortVersion = ([version]$defaultGhcVersion).ToString(3)
     }
 
@@ -13,22 +13,22 @@ Describe "Haskell" {
         $ghcShortVersion = ([version]$ghcVersion).ToString(3)
         $binGhcPath = Join-Path $ghcPackagesPath "$ghcShortVersion\bin\ghc.exe"
         @{
-            ghcVersion = $ghcVersion
+            ghcVersion      = $ghcVersion
             ghcShortVersion = $ghcShortVersion
-            binGhcPath = $binGhcPath
+            binGhcPath      = $binGhcPath
         }
     }
 
     $ghcupEnvExists = @(
-        @{envVar = "GHCUP_INSTALL_BASE_PREFIX"}
-        @{envVar = "GHCUP_MSYS2"}
+        @{envVar = "GHCUP_INSTALL_BASE_PREFIX" }
+        @{envVar = "GHCUP_MSYS2" }
     )
 
     It "<envVar> environment variable exists" -TestCases $ghcupEnvExists {
         Test-Path env:\$envVar
     }
 
-    It "Accurate 3 versions of GHC are installed" -TestCases @{ghcCount = $ghcCount} {
+    It "Accurate 3 versions of GHC are installed" -TestCases @{ghcCount = $ghcCount } {
         $ghcCount | Should -BeExactly 3
     }
 

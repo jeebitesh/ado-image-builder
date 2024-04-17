@@ -6,8 +6,8 @@ Describe "Vsix" {
     $testCases = $requiredVsixs | ForEach-Object {
         $vsix = Get-VsixExtenstionFromMarketplace -ExtensionMarketPlaceName $_
         @{
-            VsixName = $vsix.ExtensionName
-            VsixId = $vsix.VsixId
+            VsixName    = $vsix.ExtensionName
+            VsixId      = $vsix.VsixId
             AllPackages = $allPackages
         }
     }

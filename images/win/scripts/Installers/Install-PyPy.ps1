@@ -3,8 +3,7 @@
 ##  Team:  CI-Build
 ##  Desc:  Install PyPy
 ################################################################################
-function Install-PyPy
-{
+function Install-PyPy {
     param(
         [String]$PackagePath,
         [String]$Architecture
@@ -23,15 +22,14 @@ function Install-PyPy
     Extract-7Zip -Path $packagePath -DestinationPath $pypyToolcachePath
 
     # Get Python version from binaries
-    $pypyApp = Get-ChildItem -Path "$tempFolder\pypy*.exe" | Where-Object Name -match "pypy(\d+)?.exe" | Select-Object -First 1
+    $pypyApp = Get-ChildItem -Path "$tempFolder\pypy*.exe" | Where-Object Name -Match "pypy(\d+)?.exe" | Select-Object -First 1
     $pythonVersion = & $pypyApp -c "import sys;print('{}.{}.{}'.format(sys.version_info[0],sys.version_info[1],sys.version_info[2]))"
 
     $pypyFullVersion = & $pypyApp -c "import sys;print('{}.{}.{}'.format(*sys.pypy_version_info[0:3]))"
     Write-Host "Put '$pypyFullVersion' to PYPY_VERSION file"
     New-Item -Path "$tempFolder\PYPY_VERSION" -Value $pypyFullVersion | Out-Null
 
-    if ($pythonVersion)
-    {
+    if ($pythonVersion) {
         Write-Host "Installing PyPy $pythonVersion"
         $pypyVersionPath = Join-Path -Path $pypyToolcachePath -ChildPath $pythonVersion
         $pypyArchPath = Join-Path -Path $pypyVersionPath -ChildPath $architecture
@@ -54,51 +52,43 @@ function Install-PyPy
 
         # Create pip.exe if missing
         $pipPath = Join-Path -Path $pypyArchPath -ChildPath "Scripts/pip.exe"
-        if (-not (Test-Path $pipPath))
-        {
+        if (-not (Test-Path $pipPath)) {
             $pip3Path = Join-Path -Path $pypyArchPath -ChildPath "Scripts/pip3.exe"
             Copy-Item -Path $pip3Path -Destination $pipPath 
         }
 
-        if ($LASTEXITCODE -ne 0)
-        {
+        if ($LASTEXITCODE -ne 0) {
             Throw "Error happened during PyPy installation"
             exit 1
         }
 
         Write-Host "Create complete file"
         New-Item -ItemType File -Path $pypyVersionPath -Name "$architecture.complete" | Out-Null
-    }
-    else
-    {
+    } else {
         Write-Host "PyPy application is not found. Failed to expand '$packagePath' archive"
         exit 1
     }
 }
 
 # Get PyPy content from toolset
-$toolsetVersions = Get-ToolsetContent | Select-Object -ExpandProperty toolcache | Where-Object Name -eq "PyPy"
+$toolsetVersions = Get-ToolsetContent | Select-Object -ExpandProperty toolcache | Where-Object Name -EQ "PyPy"
 
 # Get PyPy releases
 $pypyVersions = Invoke-RestMethod https://downloads.python.org/pypy/versions.json
 
 Write-Host "Starting installation PyPy..."
-foreach($toolsetVersion in $toolsetVersions.versions)
-{
+foreach ($toolsetVersion in $toolsetVersions.versions) {
     # Query latest PyPy version
     $latestMajorPyPyVersion = $pypyVersions |
-        Where-Object {$_.python_version.StartsWith("$toolsetVersion") -and $_.stable -eq $true} |
+        Where-Object { $_.python_version.StartsWith("$toolsetVersion") -and $_.stable -eq $true } |
         Select-Object -ExpandProperty files -First 1 |
-        Where-Object platform -like "win*"
+        Where-Object platform -Like "win*"
     
-    if ($latestMajorPyPyVersion)
-    {
+    if ($latestMajorPyPyVersion) {
         Write-Host "Found PyPy '$($latestMajorPyPyVersion.filename)' package"
         $tempPyPyPackagePath = Start-DownloadWithRetry -Url $latestMajorPyPyVersion.download_url -Name $latestMajorPyPyVersion.filename
         Install-PyPy -PackagePath $tempPyPyPackagePath -Architecture $toolsetVersions.arch
-    }
-    else
-    {
+    } else {
         Write-Host "Failed to query PyPy version '$toolsetVersion'"
         exit 1
     }

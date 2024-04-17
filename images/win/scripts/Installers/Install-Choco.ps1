@@ -18,7 +18,7 @@ if ($userPath) {
 }
 
 # Run the installer
-Invoke-Expression ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+Invoke-Expression ((New-Object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Turn off confirmation
 choco feature enable -n allowGlobalConfirmation

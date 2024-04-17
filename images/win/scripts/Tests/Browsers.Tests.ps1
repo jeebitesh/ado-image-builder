@@ -19,22 +19,22 @@ Describe "Chrome" {
         $chromeRegPath = "HKLM:SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"
         $chromePath = (Get-ItemProperty $chromeRegPath).'(default)'
 
-        It "Chrome '<chromeRegPath>' registry path exists" -TestCases @{chromeRegPath = $chromeRegPath} {
+        It "Chrome '<chromeRegPath>' registry path exists" -TestCases @{chromeRegPath = $chromeRegPath } {
             $chromeRegPath | Should -Exist
         }
 
-        It "Chrome VersionInfo registry value exists" -TestCases @{chromePath = $chromePath} {
+        It "Chrome VersionInfo registry value exists" -TestCases @{chromePath = $chromePath } {
             $versionInfo = (Get-Item $chromePath).VersionInfo
             $versionInfo | Should -Not -BeNullOrEmpty
         }
 
         It "gupdate service is stopped" {
-            $svc = Get-Service -Name gupdate
+            $svc = Get-Service -name gupdate
             $svc.Status | Should -BeExactly Stopped
         }
 
         It "gupdatem service is stopped" {
-            $svc = Get-Service -Name gupdatem
+            $svc = Get-Service -name gupdatem
             $svc.Status | Should -BeExactly Stopped
         }
 
@@ -42,13 +42,13 @@ Describe "Chrome" {
             Get-NetFirewallRule -DisplayName BlockGoogleUpdate | Should -Not -BeNullOrEmpty
         }
 
-        It "<chromePath> is installed" -TestCases @{chromePath = $chromePath} {
+        It "<chromePath> is installed" -TestCases @{chromePath = $chromePath } {
             $chromeName = (Get-Item $chromePath).Name
             $chromePath | Should -Exist
             $chromeName | Should -BeExactly "chrome.exe"
         }
 
-        It "Chrome and Chrome Driver major versions are the same" -TestCases @{chromePath = $chromePath} {
+        It "Chrome and Chrome Driver major versions are the same" -TestCases @{chromePath = $chromePath } {
             $chromeMajor = (Get-Item $chromePath).VersionInfo.ProductMajorPart
             $chromeDriverMajor = (Get-Content $env:ChromeWebDriver\versioninfo.txt).Split(".")[0]
             $chromeMajor | Should -BeExactly $chromeDriverMajor
@@ -76,11 +76,11 @@ Describe "Edge" {
     Context "Browser" {
         $edgeRegPath = "HKLM:SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe"
 
-        It "Edge '<edgeRegPath>' registry path exists" -TestCases @{edgeRegPath = $edgeRegPath} {
+        It "Edge '<edgeRegPath>' registry path exists" -TestCases @{edgeRegPath = $edgeRegPath } {
             $edgeRegPath | Should -Exist
         }
 
-        It "Edge VersionInfo registry value exists" -TestCases @{edgeRegPath = $edgeRegPath} {
+        It "Edge VersionInfo registry value exists" -TestCases @{edgeRegPath = $edgeRegPath } {
             $versionInfo = (Get-Item (Get-ItemProperty $edgeRegPath).'(Default)').VersionInfo
             $versionInfo | Should -Not -BeNullOrEmpty
         }
@@ -111,11 +111,11 @@ Describe "Firefox" {
     Context "Browser" {
         $firefoxRegPath = "HKLM:SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\firefox.exe"
 
-        It "Firefox '<firefoxRegPath>' registry path exists" -TestCases @{firefoxRegPath = $firefoxRegPath} {
+        It "Firefox '<firefoxRegPath>' registry path exists" -TestCases @{firefoxRegPath = $firefoxRegPath } {
             $firefoxRegPath | Should -Exist
         }
 
-        It "Firefox VersionInfo registry value exists" -TestCases @{firefoxRegPath = $firefoxRegPath} {
+        It "Firefox VersionInfo registry value exists" -TestCases @{firefoxRegPath = $firefoxRegPath } {
             $versionInfo = (Get-Item (Get-ItemProperty $firefoxRegPath).'(Default)').VersionInfo
             $versionInfo | Should -Not -BeNullOrEmpty
         }

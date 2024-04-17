@@ -22,7 +22,7 @@ $installerName = $null
 
 $installersAvailable | Get-Member -MemberType NoteProperty | ForEach-Object {
   $key = $_.Name
-  if(($installersAvailable.$key.light -eq $light) -and ($installersAvailable.$key.arch -eq $arch) -and ($installersAvailable.$key.bits -eq $bits) -and ($installersAvailable.$key.installer -eq $installer) -and ($installersAvailable.$key.basever -eq $version)) {
+  if (($installersAvailable.$key.light -eq $light) -and ($installersAvailable.$key.arch -eq $arch) -and ($installersAvailable.$key.bits -eq $bits) -and ($installersAvailable.$key.installer -eq $installer) -and ($installersAvailable.$key.basever -eq $version)) {
     $installerUrl = $installersAvailable.$key.url
     $installerName = $key
     $distributor_file_hash = $installersAvailable.$key.sha512
@@ -39,9 +39,9 @@ Write-Verbose "Performing checksum verification"
 $local_file_hash = (Get-FileHash -Path (Join-Path ${env:TEMP} $installerName) -Algorithm SHA512).Hash
 
 if ($local_file_hash -ne $distributor_file_hash) {
-        Write-Host "hash must be equal to: ${distributor_file_hash}"
-        Write-Host "actual hash is: ${local_file_hash}"
-        throw 'Checksum verification failed, please rerun install'
+  Write-Host "hash must be equal to: ${distributor_file_hash}"
+  Write-Host "actual hash is: ${local_file_hash}"
+  throw 'Checksum verification failed, please rerun install'
 }
 #endregion
 

@@ -9,8 +9,8 @@ foreach ($feature in $windowsFeatures) {
     } else {
         Write-Host "Activating Windows Feature '$($feature.name)'..."
         $Arguments = @{
-            Name = $feature.name
-            IncludeAllSubFeature = [System.Convert]::ToBoolean($feature.includeAllSubFeatures)
+            Name                   = $feature.name
+            IncludeAllSubFeature   = [System.Convert]::ToBoolean($feature.includeAllSubFeatures)
             IncludeManagementTools = [System.Convert]::ToBoolean($feature.includeManagementTools)
         }
         $result = Install-WindowsFeature @Arguments

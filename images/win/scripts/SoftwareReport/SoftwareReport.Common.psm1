@@ -5,7 +5,7 @@ function Initialize-RustEnvironment {
 }
 
 function Get-OSName {
-    return (Get-CimInstance -ClassName Win32_OperatingSystem).Caption | Take-Part -Part 1,2,3
+    return (Get-CimInstance -ClassName Win32_OperatingSystem).Caption | Take-Part -Part 1, 2, 3
 }
 
 function Get-OSVersion {
@@ -135,7 +135,7 @@ function Get-HelmVersion {
 }
 
 function Get-PipVersion {
-    (pip --version) -match "pip" | Take-Part -Part 1,4,5
+    (pip --version) -match "pip" | Take-Part -Part 1, 4, 5
 }
 
 function Get-CondaVersion {
@@ -171,11 +171,11 @@ function Get-SbtVersion {
 
 function Get-DotnetSdks {
     $sdksRawList = dotnet --list-sdks
-    $sdkVersions = $sdksRawList | Foreach-Object {$_.Split()[0]}
+    $sdkVersions = $sdksRawList | ForEach-Object { $_.Split()[0] }
     $sdkPath = $sdksRawList[0].Split(' ', 2)[1] -replace '\[|]'
     [PSCustomObject]@{
         Versions = $sdkVersions
-        Path = $sdkPath
+        Path     = $sdkPath
     }
 }
 
@@ -185,7 +185,7 @@ function Get-DotnetTools {
 
     $toolsList = @()
 
-    foreach  ($dotnetTool in $dotnetTools) {
+    foreach ($dotnetTool in $dotnetTools) {
         $version = Invoke-Expression $dotnetTool.getversion
         $toolsList += [ToolVersionNode]::new($dotnetTool.name, $version)
     }
@@ -194,14 +194,14 @@ function Get-DotnetTools {
 
 function Get-DotnetRuntimes {
     $runtimesRawList = dotnet --list-runtimes
-    $runtimesRawList | Group-Object {$_.Split()[0]} | ForEach-Object {
+    $runtimesRawList | Group-Object { $_.Split()[0] } | ForEach-Object {
         $runtimeName = $_.Name
-        $runtimeVersions = $_.Group | Foreach-Object {$_.split()[1]}
+        $runtimeVersions = $_.Group | ForEach-Object { $_.split()[1] }
         $runtimePath = $_.Group[0].Split(' ', 3)[2] -replace '\[|]'
         [PSCustomObject]@{
-            "Runtime" = $runtimeName
+            "Runtime"  = $runtimeName
             "Versions" = $runtimeVersions
-            "Path" = $runtimePath
+            "Path"     = $runtimePath
         }
     }
 }
@@ -276,20 +276,21 @@ function Get-CachedDockerImagesTableData {
         $parts = $_.Split("|")
         [PSCustomObject] @{
             "Repository:Tag" = $parts[0]
-            "Digest" = $parts[1]
-            "Created" = $parts[2].split(' ')[0]
+            "Digest"         = $parts[1]
+            "Created"        = $parts[2].split(' ')[0]
         }
     } | Sort-Object -Property "Repository:Tag"
 }
 
 function Get-ShellTarget {
-    return Get-ChildItem C:\shells -File | Select-Object Name, @{n="Target";e={
-        if ($_.Name -eq "msys2bash.cmd") {
-            "C:\msys64\usr\bin\bash.exe"
-        } else {
-            @($_.Target)[0]
+    return Get-ChildItem C:\shells -File | Select-Object Name, @{n = "Target"; e = {
+            if ($_.Name -eq "msys2bash.cmd") {
+                "C:\msys64\usr\bin\bash.exe"
+            } else {
+                @($_.Target)[0]
+            }
         }
-    }} | Sort-Object Name
+    } | Sort-Object Name
 }
 
 function Get-PacmanVersion {
@@ -317,11 +318,11 @@ function Get-PipxVersion {
 function Build-PackageManagementEnvironmentTable {
     return @(
         [PSCustomObject] @{
-            "Name" = "VCPKG_INSTALLATION_ROOT"
+            "Name"  = "VCPKG_INSTALLATION_ROOT"
             "Value" = $env:VCPKG_INSTALLATION_ROOT
         },
         [PSCustomObject] @{
-            "Name" = "CONDA"
+            "Name"  = "CONDA"
             "Value" = $env:CONDA
         }
     )

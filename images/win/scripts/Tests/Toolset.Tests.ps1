@@ -3,18 +3,18 @@ $toolsExecutables = @{
         @{ Binary = "python.exe"; Arguments = "--version" },
         @{ Binary = "Scripts\pip.exe"; Arguments = "--version" }
     )
-    PyPy = @(
+    PyPy   = @(
         @{ Binary = "python.exe"; Arguments = "--version" },
         @{ Binary = "Scripts\pip.exe"; Arguments = "--version" }
     )
-    Node = @(
+    Node   = @(
         @{ Binary = "node.exe"; Arguments = "--version" },
         @{ Binary = "npm"; Arguments = "--version" }
     )
-    Go = @(
-        @{ Binary =  "bin\go.exe"; Arguments = "version" }
+    Go     = @(
+        @{ Binary = "bin\go.exe"; Arguments = "version" }
     )
-    Ruby = @(
+    Ruby   = @(
         @{ Binary = "bin\ruby.exe"; Arguments = "--version" }
     )
 }
@@ -35,7 +35,7 @@ function Test-Binaries {
         @{ Name = $Name; Version = $Version; Arch = $Arch; Binary = $_.Binary; Arguments = $_.Arguments }
     }
     It "<Binary> <Arguments>" -TestCases $testCases {
-        $binaryFullPath = Join-Path (Get-ToolsetToolFullPath -Name $Name -Version $Version -Arch $Arch) $Binary
+        $binaryFullPath = Join-Path (Get-ToolsetToolFullPath -name $Name -Version $Version -Arch $Arch) $Binary
         "$binaryFullPath $Arguments" | Should -ReturnZeroExitCode
     }
 }
@@ -70,7 +70,7 @@ foreach ($tool in $tools) {
             Context "$version" {
                 $toolInfo = @{ Name = $tool.name; Version = $version; Arch = $tool.arch }
                 It "tool-cache directory exists" -TestCases $toolInfo {
-                    $toolFullPath = Get-ToolsetToolFullPath -Name $Name -Version $Version -Arch $Arch
+                    $toolFullPath = Get-ToolsetToolFullPath -name $Name -Version $Version -Arch $Arch
                     $toolFullPath | Should -Exist
                 }
 

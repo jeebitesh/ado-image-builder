@@ -43,11 +43,11 @@ foreach ($mingwType in $mingwTypes) {
         $execDir = Join-Path "C:\msys64" $mingwType.exec_dir | Join-Path -ChildPath "bin"
         
         foreach ($tool in $tools) {
-            Context "$($tool.name) package"{
+            Context "$($tool.name) package" {
                 $executables = $tool.executables | ForEach-Object {
                     @{
                         ExecName = $_
-                        ExecDir = $execDir
+                        ExecDir  = $execDir
                     }
                 }
 

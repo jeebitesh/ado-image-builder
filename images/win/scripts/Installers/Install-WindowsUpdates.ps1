@@ -23,7 +23,7 @@ function Install-WindowsUpdates {
     # Azure service can automatic updates AV engine(Microsoft.Azure.Security.AntimalwareSignature.AntimalwareConfiguration)
     # Get-WUHistory doesn't support Windows Server 2022
     $wuHistory = Get-WindowsUpdatesHistory | Where-Object { $_.Status -in ("Successful", "InProgress") }
-    $wuFail = $updates[0] | Where-Object Title -notmatch "Microsoft Defender Antivirus" | Where-Object { -not ($wuHistory.Title -match $_.KB) }
+    $wuFail = $updates[0] | Where-Object Title -NotMatch "Microsoft Defender Antivirus" | Where-Object { -not ($wuHistory.Title -match $_.KB) }
 
     if ( $wuFail ) {
         Write-Host "Windows updates failed to install: $($wuFail.KB)"

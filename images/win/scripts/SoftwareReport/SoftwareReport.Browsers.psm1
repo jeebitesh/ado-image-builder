@@ -1,34 +1,34 @@
 $browsers = @{
-    chrome = @{
-        Name="Google Chrome";
-        File="chrome.exe"
+    chrome  = @{
+        Name = "Google Chrome";
+        File = "chrome.exe"
     };
-    edge = @{
-        Name="Microsoft Edge";
-        File="msedge.exe"
+    edge    = @{
+        Name = "Microsoft Edge";
+        File = "msedge.exe"
     };
     firefox = @{
-        Name="Mozilla Firefox";
-        File="firefox.exe"
+        Name = "Mozilla Firefox";
+        File = "firefox.exe"
     }
 }
 
 $webDrivers = @{
-    chrome = @{
-        Name="Chrome Driver";
-        Path="C:\SeleniumWebDrivers\ChromeDriver"
+    chrome    = @{
+        Name = "Chrome Driver";
+        Path = "C:\SeleniumWebDrivers\ChromeDriver"
     };
-    edge = @{
-        Name="Microsoft Edge Driver";
-        Path="C:\SeleniumWebDrivers\EdgeDriver"
+    edge      = @{
+        Name = "Microsoft Edge Driver";
+        Path = "C:\SeleniumWebDrivers\EdgeDriver"
     };
-    firefox = @{
-        Name="Gecko Driver";
-        Path="C:\SeleniumWebDrivers\GeckoDriver"
+    firefox   = @{
+        Name = "Gecko Driver";
+        Path = "C:\SeleniumWebDrivers\GeckoDriver"
     };
     iexplorer = @{
-        Name="IE Driver";
-        Path="C:\SeleniumWebDrivers\IEDriver"
+        Name = "IE Driver";
+        Path = "C:\SeleniumWebDrivers\IEDriver"
     }
 }
 
@@ -63,7 +63,7 @@ function Get-SeleniumWebDriverVersion {
     $driverName = $webDrivers.$Driver.Name
     $driverPath = $webDrivers.$Driver.Path
     $versionFileName = "versioninfo.txt";
-	$webDriverVersion = Get-Content -Path "$driverPath\$versionFileName"
+    $webDriverVersion = Get-Content -Path "$driverPath\$versionFileName"
     return [ToolVersionNode]::new($driverName, $webDriverVersion)
 }
 
@@ -76,24 +76,24 @@ function Get-SeleniumVersion {
 function Build-BrowserWebdriversEnvironmentTable {
     return @(
         @{
-            "Name" = "CHROMEWEBDRIVER"
+            "Name"  = "CHROMEWEBDRIVER"
             "Value" = $env:CHROMEWEBDRIVER
         },
         @{
-            "Name" = "EDGEWEBDRIVER"
+            "Name"  = "EDGEWEBDRIVER"
             "Value" = $env:EDGEWEBDRIVER
         },
         @{
-            "Name" = "GECKOWEBDRIVER"
+            "Name"  = "GECKOWEBDRIVER"
             "Value" = $env:GECKOWEBDRIVER
         },
         @{
-            "Name" = "SELENIUM_JAR_PATH"
+            "Name"  = "SELENIUM_JAR_PATH"
             "Value" = $env:SELENIUM_JAR_PATH
         }
     ) | ForEach-Object {
         [PSCustomObject] @{
-            "Name" = $_.Name
+            "Name"  = $_.Name
             "Value" = $_.Value
         }
     }

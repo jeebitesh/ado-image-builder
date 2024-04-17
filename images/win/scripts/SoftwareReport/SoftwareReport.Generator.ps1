@@ -159,8 +159,7 @@ Note: MSYS2 is pre-installed on image but not added to PATH.
 $msys2.AddHeader("Notes").AddNote($notes)
 
 # BizTalk Server
-if (Test-IsWin19)
-{
+if (Test-IsWin19) {
     $installedSoftware.AddHeader("BizTalk Server").AddNode($(Get-BizTalkVersion))
 }
 

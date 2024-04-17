@@ -4,7 +4,7 @@ function Get-LinkTarget {
     )
     $link = Get-Item $inputPath | Select-Object -ExpandProperty Target
     if ($link) {
-      return " -> $link"
+        return " -> $link"
     }
     return ""
 }

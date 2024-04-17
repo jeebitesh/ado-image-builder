@@ -6,18 +6,18 @@ Describe "WindowsFeatures" {
         if ($OptionalFeature) {
             (Get-WindowsOptionalFeature -Online -FeatureName $Name).State | Should -Be "Enabled"
         } else {
-            (Get-WindowsFeature -Name $Name).InstallState | Should -Be "Installed"
+            (Get-WindowsFeature -name $Name).InstallState | Should -Be "Installed"
         }
     }
 
-    it "Check WSL is on path" {
-        (Get-Command -Name 'wsl') | Should -BeTrue
+    It "Check WSL is on path" {
+        (Get-Command -name 'wsl') | Should -BeTrue
     }
 }
 
 Describe "DiskSpace" {
-    It "The image has enough disk space"{
-        $availableSpaceMB =  [math]::Round((Get-PSDrive -Name C).Free / 1MB)
+    It "The image has enough disk space" {
+        $availableSpaceMB = [math]::Round((Get-PSDrive -name C).Free / 1MB)
         $minimumFreeSpaceMB = 18 * 1024
 
         $availableSpaceMB | Should -BeGreaterThan $minimumFreeSpaceMB
@@ -26,7 +26,7 @@ Describe "DiskSpace" {
 
 Describe "DynamicPorts" {
     It "Test TCP dynamicport start=49152 num=16384" {
-        $tcpPorts = Get-NetTCPSetting | Where-Object {$_.SettingName -ne "Automatic"} | Where-Object {
+        $tcpPorts = Get-NetTCPSetting | Where-Object { $_.SettingName -ne "Automatic" } | Where-Object {
             $_.DynamicPortRangeStartPort -ne 49152 -or $_.DynamicPortRangeNumberOfPorts -ne 16384
         }
 
@@ -52,7 +52,7 @@ Describe "GDIProcessHandleQuota" {
 }
 
 Describe "Test Signed Drivers" {
-    It "bcdedit testsigning should be Yes"{
+    It "bcdedit testsigning should be Yes" {
         "$(bcdedit)" | Should -Match "testsigning\s+Yes"
     }
 }
@@ -64,7 +64,7 @@ Describe "Windows Updates" {
 
     $testCases = Get-WindowsUpdatesHistory | Sort-Object Title | ForEach-Object {
         @{
-            Title = $_.Title
+            Title  = $_.Title
             Status = $_.Status
         }
     }

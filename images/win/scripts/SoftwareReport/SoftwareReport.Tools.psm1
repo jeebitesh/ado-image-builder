@@ -5,7 +5,7 @@ function Get-Aria2Version {
 }
 
 function Get-AzCosmosDBEmulatorVersion {
-    $regKey = gci HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\* | gp | ? { $_.DisplayName -eq 'Azure Cosmos DB Emulator' }
+    $regKey = Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\* | Get-ItemProperty | Where-Object { $_.DisplayName -eq 'Azure Cosmos DB Emulator' }
     $installDir = $regKey.InstallLocation
     $exeFilePath = Join-Path $installDir 'CosmosDB.Emulator.exe'
     $version = (Get-Item $exeFilePath).VersionInfo.FileVersion
@@ -25,7 +25,7 @@ function Get-BazeliskVersion {
 }
 
 function Get-BicepVersion {
-    (bicep --version | Out-String) -match  "bicep cli version (?<version>\d+\.\d+\.\d+)" | Out-Null
+    (bicep --version | Out-String) -match "bicep cli version (?<version>\d+\.\d+\.\d+)" | Out-Null
     $bicepVersion = $Matches.Version
     return $bicepVersion
 }
@@ -37,7 +37,7 @@ function Get-RVersion {
 }
 
 function Get-CMakeVersion {
-    ($(cmake -version) | Out-String) -match  "cmake version (?<version>\d+\.\d+\.\d+)" | Out-Null
+    ($(cmake -version) | Out-String) -match "cmake version (?<version>\d+\.\d+\.\d+)" | Out-Null
     $cmakeVersion = $Matches.Version
     return $cmakeVersion
 }
@@ -45,7 +45,7 @@ function Get-CMakeVersion {
 function Get-CodeQLBundleVersions {
     $CodeQLVersionsWildcard = Join-Path $Env:AGENT_TOOLSDIRECTORY -ChildPath "CodeQL" | Join-Path -ChildPath "*"
     $CodeQLVersionPaths = Get-ChildItem $CodeQLVersionsWildcard 
-    $CodeQlVersions=@()
+    $CodeQlVersions = @()
     foreach ($CodeQLVersionPath in $CodeQLVersionPaths) {
         $FullCodeQLVersionPath = $CodeQLVersionPath | Select-Object -Expand FullName
         $CodeQLPath = Join-Path $FullCodeQLVersionPath -ChildPath "x64" | Join-Path -ChildPath "codeql" | Join-Path -ChildPath "codeql.exe"
@@ -97,7 +97,7 @@ function Get-JQVersion {
 }
 
 function Get-KubectlVersion {
-    $kubectlVersion = (kubectl version --client --output=json | ConvertFrom-Json).clientVersion.gitVersion.Replace('v','')
+    $kubectlVersion = (kubectl version --client --output=json | ConvertFrom-Json).clientVersion.gitVersion.Replace('v', '')
     return $kubectlVersion
 }
 
@@ -131,7 +131,7 @@ function Get-MercurialVersion {
 }
 
 function Get-NSISVersion {
-    $nsisVersion =  &"c:\Program Files (x86)\NSIS\makensis.exe" "/Version"
+    $nsisVersion = &"c:\Program Files (x86)\NSIS\makensis.exe" "/Version"
     return $nsisVersion.TrimStart("v")
 }
 
@@ -191,7 +191,7 @@ function Get-ZstdVersion {
 }
 
 function Get-AzureCLIVersion {
-    $azureCLIVersion = $(az version) | ConvertFrom-Json | Foreach{ $_."azure-cli" }
+    $azureCLIVersion = $(az version) | ConvertFrom-Json | ForEach-Object { $_."azure-cli" }
     return $azureCLIVersion
 }
 
@@ -227,7 +227,7 @@ function Get-AlibabaCLIVersion {
 }
 
 function Get-CloudFoundryVersion {
-    $(cf version) -match  "(?<version>\d+\.\d+\.\d+)" | Out-Null
+    $(cf version) -match "(?<version>\d+\.\d+\.\d+)" | Out-Null
     $cfVersion = $Matches.Version
     return $cfVersion
 }
@@ -286,7 +286,7 @@ function Get-VisualCPPComponents {
         "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"
         "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
     )
-    $vcpp = Get-ItemProperty -Path $regKeys | Where-Object DisplayName -like "Microsoft Visual C++*"
+    $vcpp = Get-ItemProperty -Path $regKeys | Where-Object DisplayName -Like "Microsoft Visual C++*"
     $vcpp | Sort-Object DisplayName, DisplayVersion | ForEach-Object {
         $isMatch = $_.DisplayName -match "^(?<Name>Microsoft Visual C\+\+ \d{4})\s+(?<Arch>\w{3})\s+(?<Ext>.+)\s+-"
         if ($isMatch) {
@@ -294,9 +294,9 @@ function Get-VisualCPPComponents {
             $arch = $matches["Arch"].ToLower()
             $version = $_.DisplayVersion
             [PSCustomObject]@{
-                Name = $name
+                Name         = $name
                 Architecture = $arch
-                Version = $version
+                Version      = $version
             }
         }
     }

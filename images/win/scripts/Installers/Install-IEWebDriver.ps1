@@ -5,14 +5,13 @@
 
 
 $json = Invoke-RestMethod -Uri "https://api.github.com/repos/SeleniumHQ/selenium/releases?per_page=100"
-$ieDriverUrl = $json.Where{-not $_.prerelease}.assets.browser_download_url | Where-Object { $_ -like "*IEDriverServer_x64_*.zip" } | Select-Object -First 1
+$ieDriverUrl = $json.Where{ -not $_.prerelease }.assets.browser_download_url | Where-Object { $_ -like "*IEDriverServer_x64_*.zip" } | Select-Object -First 1
 
 # Download IE selenium driver
 try {
     Write-Host "Selenium IEDriverServer download and install..."
     $driverZipFile = Start-DownloadWithRetry -Url $ieDriverUrl -Name "SeleniumWebDrivers.zip"
-}
-catch {
+} catch {
     Write-Error "[!] Failed to download $ieDriverUrl"
     exit 1
 }

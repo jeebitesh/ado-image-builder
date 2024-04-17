@@ -45,15 +45,14 @@ Extract-7Zip -Path "$sdkInstallRoot\android-sdk-licenses.zip" -DestinationPath $
 # install platform-tools
 $platformToolsPath = Join-Path -Path $sdkInstallRoot -ChildPath "platform-tools"
 # Remove outdated platform-tools that was brought by Visual Studio Android package
-if (Test-Path $platformToolsPath)
-{
+if (Test-Path $platformToolsPath) {
     Write-Host "Removing previous platform-tools installation from Visual Studio component"
     Remove-Item $platformToolsPath -Recurse -Force
 }
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages "platform-tools"
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages "platform-tools"
 
 # get packages info
 $androidPackages = Get-AndroidPackages -AndroidSDKManagerPath $sdkManager
@@ -61,53 +60,53 @@ $androidPackages = Get-AndroidPackages -AndroidSDKManagerPath $sdkManager
 # platforms
 [int]$platformMinVersion = $androidToolset.platform_min_version
 $platformList = Get-AndroidPackagesByVersion -AndroidPackages $androidPackages `
-                -PrefixPackageName "platforms;" `
-                -MinimumVersion $platformMinVersion `
-                -Delimiter "-" `
-                -Index 1
+    -PrefixPackageName "platforms;" `
+    -MinimumVersion $platformMinVersion `
+    -Delimiter "-" `
+    -Index 1
 
 # build-tools
 [version]$buildToolsMinVersion = $androidToolset.build_tools_min_version
 $buildToolsList = Get-AndroidPackagesByVersion -AndroidPackages $androidPackages `
-                -PrefixPackageName "build-tools;" `
-                -MinimumVersion $buildToolsMinVersion `
-                -Delimiter ";" `
-                -Index 1
+    -PrefixPackageName "build-tools;" `
+    -MinimumVersion $buildToolsMinVersion `
+    -Delimiter ";" `
+    -Index 1
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages $platformList
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages $platformList
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages $buildToolsList
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages $buildToolsList
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages $androidToolset.extra_list `
-                -PrefixPackageName "extras;"
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages $androidToolset.extra_list `
+    -PrefixPackageName "extras;"
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages $androidToolset.addon_list `
-                -PrefixPackageName "add-ons;"
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages $androidToolset.addon_list `
+    -PrefixPackageName "add-ons;"
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages $androidToolset.additional_tools
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages $androidToolset.additional_tools
 
 # NDKs
 $ndkMajorVersions = $androidToolset.ndk.versions
 $ndkDefaultMajorVersion = $androidToolset.ndk.default
 $ndkLatestMajorVersion = $ndkMajorVersions | Select-Object -Last 1
 
-$androidNDKs = $ndkMajorVersions | Foreach-Object {
+$androidNDKs = $ndkMajorVersions | ForEach-Object {
     Get-AndroidPackagesByName -AndroidPackages $androidPackages -PrefixPackageName "ndk;$_" | Sort-Object -Unique | Select-Object -Last 1
 }
 
 Install-AndroidSDKPackages -AndroidSDKManagerPath $sdkManager `
-                -AndroidSDKRootPath $sdkRoot `
-                -AndroidPackages $androidNDKs
+    -AndroidSDKRootPath $sdkRoot `
+    -AndroidPackages $androidNDKs
 
 $ndkLatestVersion = ($androidNDKs | Where-Object { $_ -match "ndk;$ndkLatestMajorVersion" }).Split(';')[1]
 $ndkDefaultVersion = ($androidNDKs | Where-Object { $_ -match "ndk;$ndkDefaultMajorVersion" }).Split(';')[1]

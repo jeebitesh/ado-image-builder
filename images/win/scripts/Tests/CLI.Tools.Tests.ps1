@@ -17,7 +17,6 @@ Describe "Aliyun CLI" {
     }
 }
 
-
 Describe "AWS" {
     It "AWS CLI" {
         "aws --version" | Should -ReturnZeroExitCode
@@ -31,7 +30,6 @@ Describe "AWS" {
         "sam --version" | Should -ReturnZeroExitCode
     }
 }
-
 
 Describe "GitHub CLI" {
     It "gh" {

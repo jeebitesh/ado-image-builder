@@ -13,7 +13,7 @@ $origPath = $env:PATH
 function Install-Msys2 {
   $msys2_release = "https://api.github.com/repos/msys2/msys2-installer/releases/latest"
   $msys2Uri = ((Invoke-RestMethod $msys2_release).assets | Where-Object {
-    $_.name -match "^msys2-x86_64" -and $_.name.EndsWith(".exe") }).browser_download_url
+      $_.name -match "^msys2-x86_64" -and $_.name.EndsWith(".exe") }).browser_download_url
 
   # Download the latest msys2 x86_64, filename includes release date
   Write-Host "Starting msys2 download using $($msys2Uri.split('/')[-1])"
@@ -63,8 +63,7 @@ function Install-MingwPackages($Packages) {
 
   $pkgs = pacman.exe -Q
 
-  foreach ($arch in $archs)
-  {
+  foreach ($arch in $archs) {
     Write-Host "`n$dash Installed $arch packages"
     $pkgs | grep ^${arch}-
   }
@@ -79,7 +78,7 @@ Write-Host "`n$dash pacman --noconfirm -Syyuu"
 pacman.exe -Syyuu --noconfirm
 taskkill /f /fi "MODULES eq msys-2.0.dll"
 Write-Host "`n$dash pacman --noconfirm -Syuu (2nd pass)"
-pacman.exe -Syuu  --noconfirm
+pacman.exe -Syuu --noconfirm
 taskkill /f /fi "MODULES eq msys-2.0.dll"
 
 $toolsetContent = (Get-ToolsetContent).MsysPackages

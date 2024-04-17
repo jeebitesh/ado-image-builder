@@ -15,10 +15,10 @@ Describe "Android SDK" {
     $platformTestCases = @()
     [int]$platformMinVersion = $androidToolset.platform_min_version
     $platformList = Get-AndroidPackagesByVersion -AndroidPackages $androidPackages `
-                    -PrefixPackageName "platforms;" `
-                    -MinimumVersion $platformMinVersion `
-                    -Delimiter "-" `
-                    -Index 1
+        -PrefixPackageName "platforms;" `
+        -MinimumVersion $platformMinVersion `
+        -Delimiter "-" `
+        -Index 1
 
     $platformList | ForEach-Object {
         $platformTestCases += @{ platformVersion = $_; installedPackages = $androidInstalledPackages }
@@ -27,10 +27,10 @@ Describe "Android SDK" {
     $buildToolsTestCases = @()
     [version]$buildToolsMinVersion = $androidToolset.build_tools_min_version
     $buildToolsList = Get-AndroidPackagesByVersion -AndroidPackages $androidPackages `
-                    -PrefixPackageName "build-tools;" `
-                    -MinimumVersion $buildToolsMinVersion `
-                    -Delimiter ";" `
-                    -Index 1
+        -PrefixPackageName "build-tools;" `
+        -MinimumVersion $buildToolsMinVersion `
+        -Delimiter ";" `
+        -Index 1
     $buildToolsList | ForEach-Object {
         $buildToolsTestCases += @{ buildToolsVersion = $_; installedPackages = $androidInstalledPackages }
     }
@@ -57,11 +57,11 @@ Describe "Android SDK" {
         $testCases = @(
             @{
                 PackageName = "SDK tools"
-                Sdkmanager = "$env:ANDROID_HOME\tools\bin\sdkmanager.bat"
+                Sdkmanager  = "$env:ANDROID_HOME\tools\bin\sdkmanager.bat"
             },
             @{
                 PackageName = "Command-line tools"
-                Sdkmanager = "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat"
+                Sdkmanager  = "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat"
             }
         )
 

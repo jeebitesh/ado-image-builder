@@ -42,12 +42,12 @@ if ($PriorCodeQLTagName.split("-")[-1].StartsWith("v")) {
 
 $Bundles = @(
     [PSCustomObject]@{
-        TagName=$CodeQLTagName; 
-        BundleVersion=$CodeQLBundleVersion;
+        TagName       = $CodeQLTagName; 
+        BundleVersion = $CodeQLBundleVersion;
     },
     [PSCustomObject]@{
-        TagName=$PriorCodeQLTagName; 
-        BundleVersion=$PriorCodeQLBundleVersion;
+        TagName       = $PriorCodeQLTagName; 
+        BundleVersion = $PriorCodeQLBundleVersion;
     }
 )
 

@@ -9,8 +9,8 @@ Describe "Nginx" {
     Context "Service" {
         $nginxService = Get-Service -Name nginx
         $nginxServiceTests = @{
-            Name = $nginxService.Name
-            Status = $nginxService.Status
+            Name      = $nginxService.Name
+            Status    = $nginxService.Status
             StartType = $nginxService.StartType
         }
 

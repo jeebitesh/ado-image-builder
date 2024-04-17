@@ -3,7 +3,7 @@ Describe "Git" {
     $gitTestCases = $gitTools | ForEach-Object {
         @{
             toolName = $_
-            source = [regex]::Escape("$env:ProgramFiles\Git")
+            source   = [regex]::Escape("$env:ProgramFiles\Git")
         }
     }
 
@@ -12,7 +12,7 @@ Describe "Git" {
     }
 
     It "<toolName> is located in '<source>'" -TestCases $gitTestCases {
-        (Get-Command -Name $toolName).Source | Should -Match $source
+        (Get-Command -name $toolName).Source | Should -Match $source
     }
 
     It "Git core.symlinks=true option is enabled" {
