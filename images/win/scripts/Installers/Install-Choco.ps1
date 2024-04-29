@@ -1,4 +1,5 @@
 Write-Host "Set TLS1.2"
+Set-ExecutionPolicy Bypass -Scope Process -Force; 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
 
 Write-Host "Install chocolatey"
