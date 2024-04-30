@@ -1,8 +1,7 @@
 Write-Host "Set TLS1.2"
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
-[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
-
-Invoke-Expression (new-object net.webclient).downloadstring('https://get.scoop.sh')
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest -useb 'https://get.scoop.sh'
 
 Write-Host "Install chocolatey"
 $chocoExePath = 'C:\ProgramData\Chocolatey\bin'
