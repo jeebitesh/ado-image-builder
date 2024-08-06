@@ -5,8 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+source "$HELPER_SCRIPTS"/os.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 repo_url="https://download.docker.com/linux/ubuntu"
 gpg_key="/usr/share/keyrings/docker.gpg"
@@ -19,12 +19,18 @@ apt-get install --no-install-recommends docker-ce docker-ce-cli containerd.io do
 
 # Install docker compose v2 from releases
 URL=$(get_github_package_download_url "docker/compose" "contains(\"compose-linux-x86_64\")")
-curl -fsSL $URL -o /usr/libexec/docker/cli-plugins/docker-compose
+curl -fsSL "$URL" -o /usr/libexec/docker/cli-plugins/docker-compose
 chmod +x /usr/libexec/docker/cli-plugins/docker-compose
+
+SCOUNT_URL=https://github.com/docker/scout-cli/releases/download/v1.2.1/docker-scout_1.2.1_linux_amd64.tar.gz
+curl -fsSL $SCOUNT_URL -o /usr/libexec/docker/scout/docker-scout
+chmod +x /usr/libexec/scout/docker-scout
+
+curl -sSfL https://raw.githubusercontent.com/docker/sbom-cli-plugin/main/install.sh | sh -s --
 
 # docker from official repo introduced different GID generation: https://github.com/actions/runner-images/issues/8157
 gid=$(cut -d ":" -f 3 /etc/group | grep "^1..$" | sort -n | tail -n 1 | awk '{ print $1+1 }')
-groupmod -g $gid docker
+groupmod -g "$gid" docker
 chgrp -hR docker /run/docker.sock
 
 # Enable docker.service
@@ -55,12 +61,6 @@ if [ "${DOCKERHUB_PULL_IMAGES:-yes}" == "yes" ]; then
 else
     echo "Skipping docker images pulling"
 fi
-
-# Install amazon-ecr-credential-helper
-aws_latest_release_url="https://api.github.com/repos/awslabs/amazon-ecr-credential-helper/releases/latest"
-aws_helper_url=$(curl "${authString[@]}" -fsSL $aws_latest_release_url | jq -r '.body' | awk -F'[()]' '/linux-amd64/ {print $2}')
-download_with_retries "$aws_helper_url" "/usr/bin" docker-credential-ecr-login
-chmod +x /usr/bin/docker-credential-ecr-login
 
 # Cleanup custom repositories
 rm $gpg_key

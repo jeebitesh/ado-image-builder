@@ -215,7 +215,8 @@
             "xorriso",
             "xvfb",
             "xz-utils",
-            "zsync"
+            "zsync",
+            "notary"
         ],
         "cmd_packages": [
             "acl",
