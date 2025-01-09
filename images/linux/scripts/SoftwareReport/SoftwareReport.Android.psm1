@@ -79,7 +79,7 @@ function Build-AndroidTable {
     ) | Where-Object { $_.Version } | ForEach-Object {
         [PSCustomObject] @{
             "Package Name" = $_.Package
-            "Version" = $_.Version
+            "Version"      = $_.Version
         }
     }
 }
@@ -160,9 +160,9 @@ function Get-AndroidNDKVersions {
     $ndkDefaultFullVersion = Get-ChildItem "$env:ANDROID_HOME/ndk/$ndkDefaultVersion.*" -Name | Select-Object -Last 1
 
     return ($versions | ForEach-Object {
-        $defaultPostfix = ( $_ -eq $ndkDefaultFullVersion ) ? " (default)" : ""
-        $_ + $defaultPostfix
-    } | Join-String -Separator "<br>")
+            $defaultPostfix = ( $_ -eq $ndkDefaultFullVersion ) ? " (default)" : ""
+            $_ + $defaultPostfix
+        } | Join-String -Separator "<br>")
 }
 
 function Build-AndroidEnvironmentTable {
@@ -171,8 +171,8 @@ function Build-AndroidEnvironmentTable {
     $shouldResolveLink = 'ANDROID_NDK', 'ANDROID_NDK_HOME', 'ANDROID_NDK_ROOT', 'ANDROID_NDK_LATEST_HOME'
     return $androidVersions | Sort-Object -Property Name | ForEach-Object {
         [PSCustomObject] @{
-            "Name" = $_.Name
-            "Value" = if ($shouldResolveLink.Contains($_.Name )) { Get-PathWithLink($_.Value) } else {$_.Value}
+            "Name"  = $_.Name
+            "Value" = if ($shouldResolveLink.Contains($_.Name )) { Get-PathWithLink($_.Value) } else { $_.Value }
         }
     }
 }

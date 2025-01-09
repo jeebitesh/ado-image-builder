@@ -29,7 +29,9 @@
     // Associate with test task runner
     "tasks": [
         {
-            "taskName": "Test",
+            "label": "${selectedText}",
+            "type": "process",
+            "command": [],
             "suppressTaskName": true,
             "isTestCommand": true,
             "args": [

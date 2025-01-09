@@ -25,7 +25,6 @@ for package in $pipx_packages; do
             pipx inject "$package" ansible
         fi
     fi
-
 done
 
 #invoke_tests "Common" "PipxPackages"

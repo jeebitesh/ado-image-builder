@@ -67,11 +67,11 @@ for version in $php_versions; do
         php"$version"-zip \
         php"$version"-zmq
 
-        apt-get install -y --no-install-recommends php"$version"-pcov
+    apt-get install -y --no-install-recommends php"$version"-pcov
 
-        # Disable PCOV, as Xdebug is enabled by default
-        # https://github.com/krakjoe/pcov#interoperability
-        phpdismod -v "$version" pcov
+    # Disable PCOV, as Xdebug is enabled by default
+    # https://github.com/krakjoe/pcov#interoperability
+    phpdismod -v "$version" pcov
 
     if [[ $version == "7.2" || $version == "7.3" ]]; then
         apt-get install -y --no-install-recommends php"$version"-recode
@@ -107,8 +107,8 @@ mv phpunit /usr/local/bin/phpunit
 # ubuntu 20.04 libzip-dev is libzip5 based and is not compatible libzip-dev of ppa:ondrej/php
 # see https://github.com/actions/runner-images/issues/1084
 if isUbuntu20; then
-  rm /etc/apt/sources.list.d/ondrej-*.list
-  apt-get update
+    rm /etc/apt/sources.list.d/ondrej-*.list
+    apt-get update
 fi
 
 #invoke_tests "Common" "PHP"

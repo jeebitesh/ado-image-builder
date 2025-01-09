@@ -17,5 +17,9 @@
   "shellcheck.exclude": [
     "SC1091"
   ],
-  "cmake.configureOnOpen": false
+  "cmake.configureOnOpen": false,
+  "cSpell.words": [
+    "cmdline",
+    "sdkmanager"
+  ]
 }
